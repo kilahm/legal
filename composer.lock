@@ -1,6 +1,6 @@
 {
     "_readme": [
-        "This file locks the dependencies of your project to a known state",
+        "This file locks the dependencies of your project to a known State.ts",
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
@@ -1179,7 +1179,7 @@
                 "sebastian/diff": "^1.4.3 || ^2.0",
                 "sebastian/environment": "^3.0.2",
                 "sebastian/exporter": "^3.1",
-                "sebastian/global-state": "^1.1 || ^2.0",
+                "sebastian/global-State.ts": "^1.1 || ^2.0",
                 "sebastian/object-enumerator": "^3.0.2",
                 "sebastian/resource-operations": "^1.0",
                 "sebastian/version": "^2.0"
@@ -1567,16 +1567,16 @@
             "time": "2017-04-03T13:19:02+00:00"
         },
         {
-            "name": "sebastian/global-state",
+            "name": "sebastian/global-State.ts",
             "version": "2.0.0",
             "source": {
                 "type": "git",
-                "url": "https://github.com/sebastianbergmann/global-state.git",
+                "url": "https://github.com/sebastianbergmann/global-State.ts.git",
                 "reference": "e8ba02eed7bbbb9e59e43dedd3dddeff4a56b0c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/global-state/zipball/e8ba02eed7bbbb9e59e43dedd3dddeff4a56b0c4",
+                "url": "https://api.github.com/repos/sebastianbergmann/global-State.ts/zipball/e8ba02eed7bbbb9e59e43dedd3dddeff4a56b0c4",
                 "reference": "e8ba02eed7bbbb9e59e43dedd3dddeff4a56b0c4",
                 "shasum": ""
             },
@@ -1610,10 +1610,10 @@
                     "email": "sebastian@phpunit.de"
                 }
             ],
-            "description": "Snapshotting of global state",
-            "homepage": "http://www.github.com/sebastianbergmann/global-state",
+            "description": "Snapshotting of global State.ts",
+            "homepage": "http://www.github.com/sebastianbergmann/global-State.ts",
             "keywords": [
-                "global state"
+                "global State.ts"
             ],
             "time": "2017-04-27T15:39:26+00:00"
         },

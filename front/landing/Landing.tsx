@@ -1,9 +1,12 @@
 import * as React from 'react';
+import {Login} from '../login/Login';
 
-export interface MainProps {
-    name: string;
-}
+export const Landing = (
+  () => (
+    <div>
+      <h1>Legal</h1>
+      <Login/>
+    </div>
+  )
+);
 
-export const Landing = (props: MainProps) => {
-    return <h2>{props.name}</h2>;
-};

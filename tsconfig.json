@@ -1,11 +1,26 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "./dist",
     "sourceMap": true,
     "noImplicitAny": true,
     "module": "commonjs",
     "target": "es5",
-    "jsx": "react"
+    "jsx": "react",
+    "lib": [
+      "DOM",
+      "DOM.Iterable",
+      "ES6"
+    ],
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "strictNullChecks": true,
+    "alwaysStrict": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "moduleResolution": "node",
+    "types": [
+      "reflect-metadata"
+    ]
   },
   "include": [
     "./front/**/*"
