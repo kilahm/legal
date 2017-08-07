@@ -1,3 +1,20 @@
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+
+const cssLoaderConf = {
+    loader: 'css-loader',
+    options: {
+        modules: true,
+        localIdentName: '[path][name]__[local]--[hash:base64:5]'
+    }
+};
+const cssConf = process.env.NODE_ENV === 'production'
+    ? ExtractTextPlugin.extract({
+        fallback: 'style-loader',
+        use: [cssLoaderConf]
+    })
+    : ['style-loader', 'typed-css-modules-loader', cssLoaderConf];
+
+
 module.exports = {
     entry: "./front/index.tsx",
     output: {
@@ -15,20 +32,27 @@ module.exports = {
 
     module: {
         rules: [
-            // All files with a '.ts' or '.tsx' extension will be handled by 'awesome-typescript-loader'.
-            { test: /\.tsx?$/, loader: "awesome-typescript-loader" },
-
-            // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-            { enforce: "pre", test: /\.js$/, loader: "source-map-loader" }
+            {
+                test: /\.css$/,
+                use: cssConf
+            },
+            {test: /\.tsx?$/, loader: "awesome-typescript-loader"},
+            {
+                enforce: "pre",
+                test: /\.js$/,
+                use: [
+                    "source-map-loader"
+                ]
+            },
         ]
     },
 
-    // When importing a module whose path matches one of the following, just
-    // assume a corresponding global variable exists and use that instead.
-    // This is important because it allows us to avoid bundling all of our
-    // dependencies, which allows browsers to cache those libraries between builds.
     externals: {
         "react": "React",
         "react-dom": "ReactDOM"
     },
+
+    plugins: [
+        new ExtractTextPlugin("styles.css"),
+    ],
 };

@@ -4,7 +4,7 @@ import {Landing} from './landing/Landing';
 import {State} from './store/reducer';
 import {Store} from 'redux';
 import {Provider} from 'react-redux';
-import {container} from './container.js';
+import {container} from './container';
 
 
 const store = container.get<Store<State>>('store');

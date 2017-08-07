@@ -1,5 +1,17 @@
 import {Container, interfaces} from 'inversify';
+import api from './api/provider';
+import login from './login/provider';
+import store from './store/provider';
 import ServiceIdentifier = interfaces.ServiceIdentifier;
+
+const modules = [
+  api,
+  login,
+  store,
+];
+
+export const container = new Container();
+container.load(...modules);
 
 type DepInjector1 = <T1, R, Tfinal>(fn: (
   arg1: T1,
@@ -49,4 +61,10 @@ export function createInjector<T1, T2, T3, T4>(
   dep4: ServiceIdentifier<T4>,
 ): DepInjector4
 
-declare const container: Container;
+export function createInjector(...dependencies: ServiceIdentifier<any>[]) {
+  return (fn: Function) => {
+    const deps = dependencies.map(dep => container.get(dep));
+    return fn.bind(fn, ...deps);
+  };
+}
+
