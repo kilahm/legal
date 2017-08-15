@@ -6,8 +6,32 @@ services:
       - 80:80
     volumes:
       - ./config/nginx.conf:/etc/nginx/conf.d/default.conf
-      - .:/app
+      - ./app/:/app/
+    depends_on:
+      - app
   app:
-    image: php:7.1-fpm-alpine
+    build: ./config/back
     volumes:
-     - .:/app
+      - .:/app
+    depends_on:
+      - db
+    environment:
+      CACHE_ROUTES: 'false'
+      DB.DRIVER: 'pgsql'
+      DB.HOST: 'db'
+      DB.PORT: 5432
+      DB.SCHEMA: minutes
+      DB.USER: root
+      DB.PASSWORD: secret
+  db:
+    image: postgres:9-alpine
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: minutes
+volumes:
+  db:

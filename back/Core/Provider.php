@@ -2,13 +2,11 @@
 
 namespace App\Core;
 
-use App\Ui\Handler;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Slim\CallableResolver;
 use Slim\Handlers\Error;
 use Slim\Handlers\NotAllowed;
 use Slim\Handlers\PhpError;
-use Slim\Handlers\Strategies\RequestResponse;
 use Slim\Http\Environment;
 use Slim\Http\Headers;
 use Slim\Http\Request;
@@ -40,7 +38,7 @@ class Provider extends AbstractServiceProvider
             'determineRouteBeforeAppMiddleware' => false,
             'displayErrorDetails' => true,
             'addContentLengthHeader' => true,
-            'routerCacheFile' => __DIR__ . 'routes.php',
+            'routerCacheFile' => dirname(__DIR__) . '/routes-cache.php',
         ]);
 
         $this->container->share('environment', new Environment($_SERVER));
@@ -62,8 +60,10 @@ class Provider extends AbstractServiceProvider
                 $routerCacheFile = $this->container->get('settings')['routerCacheFile'];
             }
 
-
-            $router = (new Router())->setCacheFile($routerCacheFile);
+            $router = new Router();
+            if ($routerCacheFile && getenv('CACHE_ROUTES') === 'true') {
+                $router->setCacheFile($routerCacheFile);
+            }
             if (method_exists($router, 'setContainer')) {
                 $router->setContainer($this->container);
             }
@@ -72,7 +72,7 @@ class Provider extends AbstractServiceProvider
         });
 
         $this->container->share('foundHandler', function () {
-            return new RequestResponse();
+            return new RequestJsonBodySpreadStrategy();
         });
 
         $this->container->share('phpErrorHandler', function () {
@@ -84,7 +84,7 @@ class Provider extends AbstractServiceProvider
         });
 
         $this->container->share('notFoundHandler', function () {
-            return $this->container->get(Handler::class);
+            return new NotFound();
         });
 
         $this->container->share('notAllowedHandler', function () {

@@ -1,0 +1,16 @@
+paths:
+    migrations: %%PHINX_CONFIG_DIR%%/storage/migrations
+    seeds: %%PHINX_CONFIG_DIR%%/storage/seeds
+
+environments:
+    default_migration_table: phinxlog
+    default_database: development
+    development:
+        adapter: pgsql
+        host: db
+        name: minutes
+        user: root
+        pass: 'secret'
+        port: 5432
+        charset: utf8
+version_order: creation

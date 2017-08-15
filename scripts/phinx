@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+docker run --rm -it \
+  -v $(pwd):/app \
+  -w /app \
+  --network=minutes_default \
+  php-cli:minutes \
+  vendor/bin/phinx $@
