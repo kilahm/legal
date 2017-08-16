@@ -1,6 +1,6 @@
-[ ] Create provider for JWT token
+- [ ] Create provider for JWT token
 
-[ ] Implement auth middleware by providing JWT `ValidationData`
+- [ ] Implement auth middleware by providing JWT `ValidationData`
 
-[ ] Implement create root account endpoint/view
+- [ ] Implement create root account endpoint/view
 
