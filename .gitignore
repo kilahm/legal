@@ -1,5 +1,9 @@
 /vendor/
 /node_modules/
 .idea
-public/bundle.js*
+public/*
+!public/index.php
+!public/react.js
+!public/react-dom.js
+!public/reflect-metadata.js
 /back/routes-cache.php

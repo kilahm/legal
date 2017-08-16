@@ -1,29 +1,26 @@
 const ExtractTextPlugin = require('extract-text-webpack-plugin')
 
+const isProduction = process.env['NODE_ENV'] === 'production';
+
 const cssLoaderConf = {
     loader: 'css-loader',
     options: {
-        modules: true,
-        localIdentName: '[path][name]__[local]--[hash:base64:5]'
+        minimize: true,
+        sourceMap: isProduction,
     }
 };
-const cssConf = process.env.NODE_ENV === 'production'
-    ? ExtractTextPlugin.extract({
-        fallback: 'style-loader',
-        use: [cssLoaderConf]
-    })
-    : ['style-loader', 'typed-css-modules-loader', cssLoaderConf];
+const cssConf = ExtractTextPlugin.extract({
+    fallback: 'style-loader',
+    use: [cssLoaderConf, 'typed-css-modules-loader']
+});
 
 
-module.exports = {
+const config = {
     entry: "./front/index.tsx",
     output: {
         filename: "bundle.js",
         path: __dirname + "/public"
     },
-
-    // Enable sourcemaps for debugging webpack's output.
-    devtool: "source-map",
 
     resolve: {
         // Add '.ts' and '.tsx' as resolvable extensions.
@@ -36,14 +33,14 @@ module.exports = {
                 test: /\.css$/,
                 use: cssConf
             },
-            {test: /\.tsx?$/, loader: "awesome-typescript-loader"},
             {
-                enforce: "pre",
-                test: /\.js$/,
-                use: [
-                    "source-map-loader"
-                ]
+                test: /\.tsx?$/,
+                loader: "awesome-typescript-loader",
             },
+            {
+                test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9=&.]+)?$/,
+                loader: 'file-loader',
+            }
         ]
     },
 
@@ -56,3 +53,15 @@ module.exports = {
         new ExtractTextPlugin("styles.css"),
     ],
 };
+
+if (!isProduction) {
+    config.module.rules.push({
+        enforce: "pre",
+        test: /\.js$/,
+        use: [
+            "source-map-loader"
+        ]
+    });
+    config.devtool = "source-map";
+}
+module.exports = config;

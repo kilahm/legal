@@ -1,6 +1,7 @@
 import {Container, interfaces} from 'inversify';
 import api from './api/provider';
 import login from './login/provider';
+import router from './router/provider';
 import store from './store/provider';
 import ServiceIdentifier = interfaces.ServiceIdentifier;
 
@@ -8,6 +9,7 @@ const modules = [
   api,
   login,
   store,
+  router,
 ];
 
 export const container = new Container();
