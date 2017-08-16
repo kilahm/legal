@@ -17,12 +17,12 @@ class Provider extends AbstractServiceProvider
     {
         $this->container->share(PDO::class, function () {
             // TODO: build this from settings
-            $driver = Env::get('DB.DRIVER');
-            $host = Env::get('DB.HOST');
-            $port = Env::get('DB.PORT');
-            $schema = Env::get('DB.SCHEMA');
-            $user = Env::get('DB.USER');
-            $pass = Env::get('DB.PASSWORD');
+            $driver = Env::getDbDriver();
+            $host = Env::getDbHost();
+            $port = Env::getDbPort();
+            $schema = Env::getDbSchema();
+            $user = Env::getDbUser();
+            $pass = Env::getDbPassword();
 
             $dsn = "$driver:host=$host;port=$port;dbname=$schema";
             return new PDO($dsn, $user, $pass);

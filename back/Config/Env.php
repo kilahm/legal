@@ -20,7 +20,7 @@ class Env
      * @param string $key
      * @return null|string|bool
      */
-    public static function get(string $key)
+    private static function get(string $key)
     {
         $value = getenv($key);
         if ($value === false) {
@@ -36,5 +36,35 @@ class Env
         }
 
         return $value;
+    }
+
+    public static function getDbDriver()
+    {
+        return self::get('DB.DRIVER');
+    }
+
+    public static function getDbHost()
+    {
+        return self::get('DB.HOST');
+    }
+
+    public static function getDbPort()
+    {
+        return self::get('DB.PORT');
+    }
+
+    public static function getDbSchema()
+    {
+        return self::get('DB.SCHEMA');
+    }
+
+    public static function getDbUser()
+    {
+        return self::get('DB.USER');
+    }
+
+    public static function getDbPassword()
+    {
+        return self::get('DB.PASSWORD');
     }
 }

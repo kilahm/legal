@@ -20,9 +20,15 @@ function fill_container(Container $container): Container
 
 function set_routes(\Slim\App $app): \Slim\App
 {
-    $app->group('/api', function() use ($app) {
+    $app->group('/api', function () use ($app) {
+
         $app->post('/login', \App\Auth\PostLogin::class);
-        $app->get('/migrations',\App\Persistence\GetMigrations::class);
+
+        // All of these routes require any login
+        $app->group('', function () use ($app) {
+            $app->get('/migrations', \App\Persistence\GetMigrations::class);
+        })
+            ->add(\App\Auth\UserMiddleware::class);
     });
 
     return $app;

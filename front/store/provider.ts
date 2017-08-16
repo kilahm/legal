@@ -9,6 +9,6 @@ const store = createStore(
 );
 
 export default new ContainerModule(bind => {
-  bind<Dispatch<State>>('dispatch').toFunction(store.dispatch);
+  bind<Dispatch<State>>('dispatch').toConstantValue(store.dispatch);
   bind<Store<State>>('store').toConstantValue(store);
 });
