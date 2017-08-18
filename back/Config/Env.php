@@ -1,6 +1,9 @@
 <?php
+declare(strict=1);
 
 namespace App\Config;
+
+use App\Error\ConfigurationError;
 
 class Env
 {
@@ -38,33 +41,47 @@ class Env
         return $value;
     }
 
+    private static function requireString(string $key): string
+    {
+        $value = self::get($key);
+        if (empty($value) || !is_string($value)) {
+            throw new ConfigurationError('Unable to determine JWT signing key');
+        }
+        return $value;
+    }
+
     public static function getDbDriver()
     {
-        return self::get('DB.DRIVER');
+        return self::requireString('DB.DRIVER');
     }
 
     public static function getDbHost()
     {
-        return self::get('DB.HOST');
+        return self::requireString('DB.HOST');
     }
 
     public static function getDbPort()
     {
-        return self::get('DB.PORT');
+        return self::requireString('DB.PORT');
     }
 
     public static function getDbSchema()
     {
-        return self::get('DB.SCHEMA');
+        return self::requireString('DB.SCHEMA');
     }
 
     public static function getDbUser()
     {
-        return self::get('DB.USER');
+        return self::requireString('DB.USER');
     }
 
     public static function getDbPassword()
     {
-        return self::get('DB.PASSWORD');
+        return self::requireString('DB.PASSWORD');
+    }
+
+    public static function getJwtSigningKey()
+    {
+        return self::requireString('JWT.SIGNING_KEY');
     }
 }

@@ -1,4 +1,5 @@
 <?php
+declare(strict=1);
 
 namespace App\Persistence;
 
@@ -9,7 +10,7 @@ class GetMigrations
     /** @var \PDO */
     private $db;
 
-    public function __construct(\PDO $db)
+    public function __construct(Db $db)
     {
         $this->db = $db;
     }

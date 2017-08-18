@@ -1,4 +1,5 @@
 <?php
+declare(strict=1);
 
 namespace App\Persistence;
 
@@ -11,6 +12,7 @@ class Provider extends AbstractServiceProvider
     protected $provides = [
         PDO::class,
         GetMigrations::class,
+        Db::class,
     ];
 
     public function register(): void
@@ -28,8 +30,7 @@ class Provider extends AbstractServiceProvider
             return new PDO($dsn, $user, $pass);
         });
 
-        $this->container->share(GetMigrations::class, function () {
-            return new GetMigrations($this->container->get(PDO::class));
-        });
+        $this->container->share(Db::class)->withArgument(PDO::class);
+        $this->container->share(GetMigrations::class)->withArgument(Db::class);
     }
 }
