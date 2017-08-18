@@ -3,7 +3,9 @@ declare(strict=1);
 
 namespace App\User;
 
+use App\Persistence\DataIntegretyError;
 use App\Persistence\Db;
+use InvalidArgumentException;
 
 class Repository
 {
@@ -17,9 +19,39 @@ class Repository
         $this->db = $db;
     }
 
-    public function fetchUserByEmail(string $email): array
+    public function fetchUserByEmail(string $email): ?User
     {
-        $results = $this->db->fetchAll('SELECT "name", "password", "role" FROM "user"');
-        return iterator_to_array($results);
+        $query = 'SELECT "email", "name", "password", "roles" FROM "user" WHERE "email" = ?';
+        $results = $this->db->fetchOne($query, [$email]);
+        if ($results === null) {
+            return null;
+        }
+
+        try {
+            $roles = array_map(function (string $role): Role {
+                return Role::assert($role);
+            }, $this->db->unseraliazeArray($results['roles']));
+        } catch (InvalidArgumentException $e) {
+            throw new DataIntegretyError('Invalid role stored in database');
+        }
+        return new User($results['email'], $results['name'], $results['password'], $roles);
+    }
+
+    public function createUser(User $user): void
+    {
+        $serializedRoles = $this->db->serializeArray(
+            array_map(function (Role $role): string {
+                return $role->getValue();
+            }, $user->getRoles())
+        );
+        $this->db->insert(
+            'user',
+            [
+                'email' => $user->getEmail(),
+                'name' => $user->getName(),
+                'password' => $user->getPasswordHash(),
+                'roles' => $serializedRoles,
+            ]
+        );
     }
 }

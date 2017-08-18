@@ -18,4 +18,23 @@ class Arr
         }
         return $default;
     }
+
+    public static function isVector(array $data, bool $emptyIsVector = false): bool
+    {
+        if (empty($data)) {
+            return $emptyIsVector;
+        }
+
+        foreach (array_keys($data) as $i => $key) {
+            if ($i !== $key) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public static function isAssoc($data, bool $emptyIsAssoc = true): bool
+    {
+        return !self::isVector($data, !$emptyIsAssoc);
+    }
 }
