@@ -1,5 +1,5 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\User;
 
@@ -41,7 +41,7 @@ class User
         return $this->name;
     }
 
-    public function getEmail(): int
+    public function getEmail(): string
     {
         return $this->email;
     }

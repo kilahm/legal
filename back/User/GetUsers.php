@@ -1,9 +1,9 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\User;
 
-use App\Core\ResponseFactory;
+use App\Output\ResponseFactory;
 
 class GetUsers
 {

@@ -1,5 +1,5 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\Auth;
 
@@ -20,7 +20,7 @@ class CheckPasswordResult
     /**
      * @return bool
      */
-    public function isNeedsRehash(): bool
+    public function needsRehash(): bool
     {
         return $this->needsRehash;
     }

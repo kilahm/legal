@@ -1,9 +1,9 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\Persistence;
 
-use App\Util\Arr;
+use App\Persistence\Query\Insert;
 
 class Db
 {
@@ -15,23 +15,44 @@ class Db
         $this->connection = $connection;
     }
 
-    public static function serializeArray(?array $data): ?string
+    public static function serialize($data)
     {
         if ($data === null) {
             return null;
         }
 
-        $bulk = array_reduce($data, function (string $payload, $value): string {
-            if (is_array($value)) {
-                $value = self::serializeArray($value);
-            }
-            return $payload . ',' . (string)$value;
-        }, '');
+        if (is_scalar($data)) {
+            return $data;
+        }
 
-        return '{' . $bulk . '}';
+        if (is_array($data)) {
+            return self::serializeArray($data);
+        }
+
+        throw new \InvalidArgumentException('Only arrays and scalars may be serialized for the database');
     }
 
-    public static function unseraliazeArray(?string $data): array
+    private static function serializeArray(array $data): string
+    {
+        return '{'
+            . implode(',', array_map(
+                function ($value) {
+                    return self::serializeArrayValue($value);
+                },
+                $data
+            ))
+            . '}';
+    }
+
+    private static function serializeArrayValue($value)
+    {
+        if (is_string($value)) {
+            return preg_replace('/(,|\\\\)/', '\\\\$1', $value);
+        }
+        return self::serialize($value);
+    }
+
+    public static function unserializeArray(?string $data): array
     {
         if ($data === null) {
             return null;
@@ -63,17 +84,9 @@ class Db
             ?: null;
     }
 
-    public function insert(string $table, array $data): void
+    public function insertInto(string $table): Insert
     {
-        if (empty($data)) {
-            throw new \RuntimeException('Attempting to insert an empty data set');
-        }
-        // TODO: abstract all this logic into an Insert class
-
-        $data = Arr::isVector($data) ? $data : [$data];
-        $fields = $this->extractInsertFields($data);
-        $serializedData = $this->serializeData($fields, $data);
-        $SQL = sprintf('INSERT INTO "%s" ');
+        return new Insert($table, $this);
     }
 
     public function lastInsertId(): string
@@ -88,25 +101,8 @@ class Db
         return $statement;
     }
 
-    private function extractInsertFields(array $data): array
+    public function execute(string $sql, ?array $parameters = null)
     {
-        $firstFields = array_keys($data[0]);
-        foreach ($firstFields as $field) {
-            if (!is_string($field)) {
-                throw new \InvalidArgumentException('Insert field names must all be strings');
-            }
-        }
-        return $firstFields;
-    }
-
-    private function serializeData(array $fields, array $data)
-    {
-        $mappedRows = array_map(function (array $row) use ($fields): string {
-
-        }, $data);
-        if(count($mappedRows) === 1) {
-            return $mappedRows[0];
-        }
-        return '(' . implode(',', $mappedRows) . ')';
+        $this->run($sql, $parameters);
     }
 }

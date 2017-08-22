@@ -1,9 +1,9 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\Auth;
 
-use App\Core\ResponseFactory;
+use App\Output\ResponseFactory;
 use Lcobucci\JWT\Parser;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\Token;

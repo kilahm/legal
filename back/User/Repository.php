@@ -1,11 +1,12 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\User;
 
 use App\Persistence\DataIntegretyError;
 use App\Persistence\Db;
 use InvalidArgumentException;
+use PDO;
 
 class Repository
 {
@@ -14,7 +15,7 @@ class Repository
     /** @var Db */
     private $db;
 
-    public function __construct(Db $db)
+    public function __construct(PDO $db)
     {
         $this->db = $db;
     }
@@ -30,7 +31,7 @@ class Repository
         try {
             $roles = array_map(function (string $role): Role {
                 return Role::assert($role);
-            }, $this->db->unseraliazeArray($results['roles']));
+            }, Db::unseraliazeArray($results['roles']));
         } catch (InvalidArgumentException $e) {
             throw new DataIntegretyError('Invalid role stored in database');
         }
@@ -39,19 +40,18 @@ class Repository
 
     public function createUser(User $user): void
     {
-        $serializedRoles = $this->db->serializeArray(
-            array_map(function (Role $role): string {
-                return $role->getValue();
-            }, $user->getRoles())
-        );
-        $this->db->insert(
-            'user',
-            [
-                'email' => $user->getEmail(),
-                'name' => $user->getName(),
-                'password' => $user->getPasswordHash(),
-                'roles' => $serializedRoles,
-            ]
-        );
+        $roles = array_map(function (Role $role) {
+            return $role->getValue();
+        }, $user->getRoles());
+        $this->db->insertInto('user')
+            ->record(
+                [
+                    'email' => $user->getEmail(),
+                    'name' => $user->getName(),
+                    'password' => $user->getPasswordHash(),
+                    'roles' => $roles
+                ]
+            )
+            ->execute();
     }
 }

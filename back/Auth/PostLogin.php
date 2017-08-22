@@ -1,9 +1,9 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\Auth;
 
-use App\Core\ResponseFactory;
+use App\Output\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 

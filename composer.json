@@ -25,10 +25,15 @@
       "App\\": "back/"
     }
   },
+  "autoload-dev": {
+    "psr-4": {
+      "Test\\": "test/"
+    }
+  },
   "scripts": {
     "test": "phpunit",
-    "lint": "phpcs --standard=PSR2 back",
-    "lint-errors": "phpcs --standard=PSR2 back",
-    "fix-style": "phpcbf --standard=PSR2 back"
+    "lint": "phpcs --standard=PSR2 back test",
+    "lint-errors": "phpcs --standard=PSR2 back test",
+    "fix-style": "phpcbf --standard=PSR2 back test"
   }
 }

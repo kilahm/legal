@@ -1,5 +1,5 @@
 <?php
-declare(strict=1);
+declare(strict_types=1);
 
 namespace App\Util;
 
@@ -36,5 +36,16 @@ class Arr
     public static function isAssoc($data, bool $emptyIsAssoc = true): bool
     {
         return !self::isVector($data, !$emptyIsAssoc);
+    }
+
+    public static function flatten(array $data): array
+    {
+        return array_reduce($data, function ($flat, $value) {
+            if (is_array($value)) {
+                return array_merge($flat, $value);
+            }
+            $flat[] = $value;
+            return $flat;
+        });
     }
 }
