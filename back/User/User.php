@@ -26,7 +26,7 @@ class User
         $this->roles = $roles;
         $pInfo = password_get_info($password);
         if ($pInfo['algo'] === 0) {
-            $this->password = password_hash($password, PASSWORD_DEFAULT);
+            $this->setPassword($password);
         }
         $this->password = $password;
     }
@@ -51,11 +51,26 @@ class User
         return $this->password;
     }
 
+    public function withPassword(string $password): self
+    {
+        $new = clone $this;
+        $new->setPassword($password);
+        return $new;
+    }
+
     public function checkPassword(string $input): CheckPasswordResult
     {
         return new CheckPasswordResult(
             password_verify($input, $this->password),
             password_needs_rehash($this->password, PASSWORD_DEFAULT)
         );
+    }
+
+    /**
+     * @param string $password
+     */
+    private function setPassword(string $password): void
+    {
+        $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 }

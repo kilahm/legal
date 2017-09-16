@@ -28,19 +28,21 @@ function fill_container(Container $container): Container
 
 function set_routes(App $app): App
 {
-    /** @var AuthMiddleware $authMiddleware */
-    $app->group('/api', function () use ($app, $authMiddleware) {
+    $app->group(
+        '/api',
+        function () use ($app) {
 
-        $app->post('/login', PostLogin::class);
-        $app->get('/migrations', GetMigrations::class);
-        $app->get('/users', GetUsers::class);
-        $app->post('/users', PostUsers::class);
-    });
+            $app->post('/login', PostLogin::class);
+            $app->get('/migrations', GetMigrations::class);
+            $app->get('/users', GetUsers::class);
+            $app->post('/users', PostUsers::class);
+        }
+    );
 
     return $app;
 }
 
 function set_global_middleware(App $app): App
 {
-    $app->add(\App\Input\Middleware::class);
+    return $app;
 }

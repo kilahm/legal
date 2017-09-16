@@ -11,7 +11,7 @@ class Arr
      * @param $default
      * @return mixed
      */
-    public static function get(array $array, $key, $default = null): mixed
+    public static function get(array $array, $key, $default = null)
     {
         if (array_key_exists($key, $array)) {
             return $array[$key];
@@ -40,12 +40,16 @@ class Arr
 
     public static function flatten(array $data): array
     {
-        return array_reduce($data, function ($flat, $value) {
-            if (is_array($value)) {
-                return array_merge($flat, $value);
-            }
-            $flat[] = $value;
-            return $flat;
-        });
+        return array_reduce(
+            $data,
+            function ($flat, $value) {
+                if (is_array($value)) {
+                    return array_merge($flat, $value);
+                }
+                $flat[] = $value;
+                return $flat;
+            },
+            []
+        );
     }
 }

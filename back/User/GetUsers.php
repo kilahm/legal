@@ -17,6 +17,10 @@ class GetUsers
 
     public function __invoke()
     {
-        return ResponseFactory::json(['users' => $this->repository->fetchUserByEmail('')]);
+        $users = [];
+        foreach($this->repository->fetchAllUsers() as $user) {
+            $users[] = $user;
+        }
+        return ResponseFactory::json(['users' => $user]);
     }
 }

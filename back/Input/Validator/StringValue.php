@@ -7,14 +7,13 @@ use App\Input\Error;
 use App\Input\ValidationResult;
 use App\Input\Validator;
 
-class Email implements Validator
+class StringValue implements Validator
 {
     public function validate($value): ValidationResult
     {
-        if (filter_var($value, FILTER_VALIDATE_EMAIL)) {
+        if (is_string($value)) {
             return new ValidationResult($value, null);
         }
-
-        return new ValidationResult(null, new Error('Expected valid email address', []));
+        return new ValidationResult(null, new Error('Expected a string', []));
     }
 }

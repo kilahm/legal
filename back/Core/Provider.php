@@ -32,68 +32,98 @@ class Provider extends AbstractServiceProvider
 
     public function register(): void
     {
-        $this->container->share('settings', [
-            'httpVersion' => '1.1',
-            'responseChunkSize' => 4096,
-            'outputBuffering' => 'append',
-            'determineRouteBeforeAppMiddleware' => false,
-            'displayErrorDetails' => true,
-            'addContentLengthHeader' => true,
-            'routerCacheFile' => dirname(__DIR__) . '/routes-cache.php',
-        ]);
+        $this->container->share(
+            'settings',
+            [
+                'httpVersion' => '1.1',
+                'responseChunkSize' => 4096,
+                'outputBuffering' => 'append',
+                'determineRouteBeforeAppMiddleware' => false,
+                'displayErrorDetails' => true,
+                'addContentLengthHeader' => true,
+                'routerCacheFile' => dirname(__DIR__) . '/routes-cache.php',
+            ]
+        );
 
         $this->container->share('environment', new Environment($_SERVER));
 
-        $this->container->share('request', function () {
-            return Request::createFromEnvironment($this->container->get('environment'));
-        });
-
-        $this->container->share('response', function () {
-            $headers = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
-            $response = new Response(200, $headers);
-
-            return $response->withProtocolVersion($this->container->get('settings')['httpVersion']);
-        });
-
-        $this->container->share('router', function () {
-            $routerCacheFile = false;
-            if (isset($this->container->get('settings')['routerCacheFile'])) {
-                $routerCacheFile = $this->container->get('settings')['routerCacheFile'];
+        $this->container->share(
+            'request',
+            function () {
+                return Request::createFromEnvironment($this->container->get('environment'));
             }
+        );
 
-            $router = new Router();
-            if ($routerCacheFile && getenv('CACHE_ROUTES') === 'true') {
-                $router->setCacheFile($routerCacheFile);
+        $this->container->share(
+            'response',
+            function () {
+                $headers = new Headers(['Content-Type' => 'text/html; charset=UTF-8']);
+                $response = new Response(200, $headers);
+
+                return $response->withProtocolVersion($this->container->get('settings')['httpVersion']);
             }
-            if (method_exists($router, 'setContainer')) {
-                $router->setContainer($this->container);
+        );
+
+        $this->container->share(
+            'router',
+            function () {
+                $routerCacheFile = false;
+                if (isset($this->container->get('settings')['routerCacheFile'])) {
+                    $routerCacheFile = $this->container->get('settings')['routerCacheFile'];
+                }
+
+                $router = new Router();
+                if ($routerCacheFile && getenv('CACHE_ROUTES') === 'true') {
+                    $router->setCacheFile($routerCacheFile);
+                }
+                if (method_exists($router, 'setContainer')) {
+                    $router->setContainer($this->container);
+                }
+
+                return $router;
             }
+        );
 
-            return $router;
-        });
+        $this->container->share(
+            'foundHandler',
+            function () {
+                return new RequestSpreadStrategy();
+            }
+        );
 
-        $this->container->share('foundHandler', function () {
-            return new RequestJsonBodySpreadStrategy();
-        });
+        $this->container->share(
+            'phpErrorHandler',
+            function () {
+                return new PhpError($this->container->get('settings')['displayErrorDetails']);
+            }
+        );
 
-        $this->container->share('phpErrorHandler', function () {
-            return new PhpError($this->container->get('settings')['displayErrorDetails']);
-        });
+        $this->container->share(
+            'errorHandler',
+            function () {
+                return new Error($this->container->get('settings')['displayErrorDetails']);
+            }
+        );
 
-        $this->container->share('errorHandler', function () {
-            return new Error($this->container->get('settings')['displayErrorDetails']);
-        });
+        $this->container->share(
+            'notFoundHandler',
+            function () {
+                return new NotFound();
+            }
+        );
 
-        $this->container->share('notFoundHandler', function () {
-            return new NotFound();
-        });
+        $this->container->share(
+            'notAllowedHandler',
+            function () {
+                return new NotAllowed();
+            }
+        );
 
-        $this->container->share('notAllowedHandler', function () {
-            return new NotAllowed();
-        });
-
-        $this->container->share('callableResolver', function () {
-            return new CallableResolver($this->container);
-        });
+        $this->container->share(
+            'callableResolver',
+            function () {
+                return new CallableResolver($this->container);
+            }
+        );
     }
 }

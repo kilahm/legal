@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Persistence\Query;
 
-interface SqlQuery
+interface SqlFragment
 {
     /**
      * Valid SQL statement with PDO compatible replacement tokens

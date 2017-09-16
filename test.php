@@ -1,5 +1,4 @@
 <?php
-
-$email = '"<script>a</script>"@a.c';
-var_dump(filter_var($email, FILTER_VALIDATE_EMAIL));
-
+$pattern = '/^\{(?:(.+?),)*\}$/';
+$result = preg_match($pattern, '{abc}', $matches);
+var_dump($result, $matches);

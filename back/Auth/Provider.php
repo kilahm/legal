@@ -20,12 +20,17 @@ class Provider extends AbstractServiceProvider
     {
         $this->container->share(LoginRepository::class)->withArgument(\PDO::class);
         $this->container->share(PostLogin::class)->withArgument(LoginRepository::class);
-        $this->container->share(Signer::class, function () {
-            return new Signer\Hmac\Sha256();
-        });
-        $this->container->share(Middleware::class)->withArguments([
+        $this->container->share(
             Signer::class,
-            new RawArgument(Env::getJwtSigningKey()),
-        ]);
+            function () {
+                return new Signer\Hmac\Sha256();
+            }
+        );
+        $this->container->share(Middleware::class)->withArguments(
+            [
+                Signer::class,
+                new RawArgument(Env::getJwtSigningKey()),
+            ]
+        );
     }
 }

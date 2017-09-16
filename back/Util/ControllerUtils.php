@@ -9,11 +9,13 @@ trait ControllerUtils
 {
     private function extractFromRequest(array $keys, Request $request): array
     {
-        return array_map(
-            function ($key) use ($request) {
-                return $request->getParsedBodyParam($key);
+        return array_reduce(
+            $keys,
+            function ($data, $key) use ($request) {
+                $data[$key] = $request->getParsedBodyParam($key);
+                return $data;
             },
-            $keys
+            []
         );
     }
 }

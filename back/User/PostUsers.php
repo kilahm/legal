@@ -4,10 +4,14 @@ declare(strict_types=1);
 namespace App\User;
 
 use App\Input\Input;
+use App\Input\Validator\Email;
+use App\Input\Validator\Enum;
+use App\Input\Validator\StringValue;
+use App\Input\Validator\Vector;
 use App\Output\Renderer;
 use App\Output\ResponseFactory;
-use Slim\Http\Request;
 use App\Util\ControllerUtils;
+use Slim\Http\Request;
 
 class PostUsers
 {
@@ -26,7 +30,7 @@ class PostUsers
         return Input::validate(
             $this->extractFromRequest(['email', 'name', 'password', 'roles'], $request),
             $this->buildInputValidators(),
-            function(array $input) {
+            function (array $input) {
                 $user = new User($input['email'], $input['name'], $input['password'], $input['roles']);
                 $this->repository->createUser($user);
                 return ResponseFactory::json(['user' => Renderer::renderUser($user)]);
@@ -39,8 +43,8 @@ class PostUsers
     {
         return [
             'email' => new Email(),
-            'name' => new SafeString(),
-            'password' => new UnsafeString(),
+            'name' => new StringValue(),
+            'password' => new StringValue(),
             'roles' => new Vector(new Enum(Role::class)),
         ];
     }

@@ -6,7 +6,7 @@ namespace App\Core;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class RequestJsonBodySpreadStrategy
+class RequestSpreadStrategy
 {
     /**
      * Invoke a route callable.
@@ -24,10 +24,6 @@ class RequestJsonBodySpreadStrategy
         ResponseInterface $response,
         array $routeArguments
     ): ResponseInterface {
-        $body = null;
-        if(strpos($request->getHeaderLine('content-type'), 'json') !== false) {
-            $body = json_decode($request->getBody()->getContents(), true);
-        }
-        return $callable($request, is_array($body) ? $body : [], ...$routeArguments);
+        return $callable($request, ...$routeArguments);
     }
 }

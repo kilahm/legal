@@ -5,5 +5,5 @@ namespace App\Input;
 
 interface Validator
 {
-    public function validate(string $key, $value): ValidationResult;
+    public function validate($value): ValidationResult;
 }

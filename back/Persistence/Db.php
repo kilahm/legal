@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Persistence;
 
 use App\Persistence\Query\Insert;
+use App\Persistence\Query\RawFragment;
+use App\Persistence\Query\SqlFragment;
 
 class Db
 {
@@ -15,41 +17,50 @@ class Db
         $this->connection = $connection;
     }
 
-    public static function serialize($data)
+    public static function raw(string $sql, array $params = []): RawFragment
     {
-        if ($data === null) {
-            return null;
-        }
+        return new RawFragment($sql, $params);
+    }
 
-        if (is_scalar($data)) {
-            return $data;
+    public static function serialize($data): SqlFragment
+    {
+        if ($data === null || is_scalar($data)) {
+            return self::raw('?', [$data]);
         }
 
         if (is_array($data)) {
-            return self::serializeArray($data);
+            list($sql, $values) = self::serializeArray($data);
+            return self::raw($sql, $values);
         }
 
         throw new \InvalidArgumentException('Only arrays and scalars may be serialized for the database');
     }
 
-    private static function serializeArray(array $data): string
+    private static function serializeArray(array $data): array
     {
-        return '{'
-            . implode(',', array_map(
-                function ($value) {
-                    return self::serializeArrayValue($value);
-                },
-                $data
-            ))
-            . '}';
+        $result = ['sql' => [], 'values' => []];
+        foreach ($data as $value) {
+            list($sql, $values) = self::serializeArrayElement($value);
+            $result['sql'][] = $sql;
+            $result['values'] = array_merge($result['values'], $values);
+        }
+        return [
+            'ARRAY[' . implode(',', $result['sql']) . ']',
+            $result['values'],
+        ];
     }
 
-    private static function serializeArrayValue($value)
+    private static function serializeArrayElement($value): array
     {
-        if (is_string($value)) {
-            return preg_replace('/(,|\\\\)/', '\\\\$1', $value);
+        if (is_scalar($value)) {
+            return ['?', [$value]];
         }
-        return self::serialize($value);
+
+        if (is_array($value)) {
+            return self::serializeArray($value);
+        }
+
+        throw new \InvalidArgumentException('Only arrays and scalars may be serialized for the database');
     }
 
     public static function unserializeArray(?string $data): array
@@ -57,31 +68,37 @@ class Db
         if ($data === null) {
             return null;
         }
-        $pattern = '/^\{(:?(.+?),)*\}$';
+        $pattern = '/^{(.*?)}$/';
         $matches = [];
-        if (preg_match($pattern, $data, $matches)) {
-            return $matches;
+        if (!preg_match($pattern, $data, $matches)) {
+            throw new \RuntimeException('Array values from the DB must be wrapped in {}');
         }
-        throw new \RuntimeException('Expected value from DB to be an array');
+        if ($matches[1] === '') {
+            return [];
+        }
+        $body = $matches[1] . ',';
+        $splitPattern = '/((?:[^,\\\\]|\\\\,|\\\\\\\\)*?,)/';
+        $matches = [];
+        preg_match_all($splitPattern, $body, $matches);
+        return array_map(
+            function (string $match) {
+                $match = rtrim($match, ',');
+                return strtr($match, ['\\\\' => '\\', '\\,' => ',']);
+            },
+            $matches[0]
+        );
     }
 
-    public function fetchAll(string $sql, ?array $params = null): \Iterator
+    public static function wrapToken(string $field)
     {
-        $statement = $this->run($sql, $params);
-
-        $row = $statement->fetch(\PDO::FETCH_ASSOC);
-        while (is_array($row)) {
-            yield $row;
-            $row = $statement->fetch(\PDO::FETCH_ASSOC);
-        }
-    }
-
-    public function fetchOne(string $sql, ?array $params = null): ?array
-    {
-        return $this
-            ->run($sql, $params)
-            ->fetch(\PDO::FETCH_ASSOC)
-            ?: null;
+        $parts = explode('.', $field);
+        $wrappedParts = array_map(
+            function (string $part): string {
+                return "\"$part\"";
+            },
+            $parts
+        );
+        return implode('.', $wrappedParts);
     }
 
     public function insertInto(string $table): Insert
@@ -94,15 +111,30 @@ class Db
         return $this->connection->lastInsertId();
     }
 
-    private function run(string $sql, ?array $params): \PDOStatement
+    public function execute(SqlFragment $fragment)
     {
+        $sql = $fragment->toSql();
+        $params = $fragment->getParameters();
+        file_put_contents('php://stderr', 'DB Query: ' . $sql);
+        file_put_contents('php://stderr', 'Params: ' . var_export($params, true));
         $statement = $this->connection->prepare($sql);
-        $statement->execute($params);
-        return $statement;
+        $result = $statement->execute($params);
+        if ($result) {
+            file_put_contents('php://stderr', 'DB Query Success');
+        } else {
+            file_put_contents('php://stderr', 'DB Query Failed');
+            file_put_contents('php://stderr', $statement->errorInfo());
+        }
+        return new Response($statement);
     }
 
-    public function execute(string $sql, ?array $parameters = null)
+    public function fetch(string $table): Query\Fetch
     {
-        $this->run($sql, $parameters);
+        return new Query\Fetch($table, $this);
+    }
+
+    public function update(string $table): Query\Update
+    {
+        return new Query\Update($table, $this);
     }
 }

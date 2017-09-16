@@ -70,7 +70,7 @@ class Input
     private function validateData(array $data)
     {
         foreach ($this->validators as $key => $validator) {
-            $result = $validator->validate($key, Arr::get($data, $key));
+            $result = $validator->validate(Arr::get($data, $key));
             $error = $result->getError();
             if ($error === null) {
                 $this->data[$key] = $result->getValue();

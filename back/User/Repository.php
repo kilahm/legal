@@ -5,8 +5,8 @@ namespace App\User;
 
 use App\Persistence\DataIntegretyError;
 use App\Persistence\Db;
+use App\Persistence\Query\Constraint\Op;
 use InvalidArgumentException;
-use PDO;
 
 class Repository
 {
@@ -15,34 +15,32 @@ class Repository
     /** @var Db */
     private $db;
 
-    public function __construct(PDO $db)
+    public function __construct(Db $db)
     {
         $this->db = $db;
     }
 
     public function fetchUserByEmail(string $email): ?User
     {
-        $query = 'SELECT "email", "name", "password", "roles" FROM "user" WHERE "email" = ?';
-        $results = $this->db->fetchOne($query, [$email]);
+        $results = $this->db->fetch('user')
+            ->fields('email', 'name', 'password', 'roles')
+            ->where('email', Op::EQUAL(), $email)
+            ->first();
         if ($results === null) {
             return null;
         }
 
-        try {
-            $roles = array_map(function (string $role): Role {
-                return Role::assert($role);
-            }, Db::unseraliazeArray($results['roles']));
-        } catch (InvalidArgumentException $e) {
-            throw new DataIntegretyError('Invalid role stored in database');
-        }
-        return new User($results['email'], $results['name'], $results['password'], $roles);
+        return $this->translateToUser($results);
     }
 
     public function createUser(User $user): void
     {
-        $roles = array_map(function (Role $role) {
-            return $role->getValue();
-        }, $user->getRoles());
+        $roles = array_map(
+            function (Role $role) {
+                return $role->getValue();
+            },
+            $user->getRoles()
+        );
         $this->db->insertInto('user')
             ->record(
                 [
@@ -53,5 +51,54 @@ class Repository
                 ]
             )
             ->execute();
+    }
+
+    public function updateUser(User $user)
+    {
+        $roles = array_map(
+            function (Role $role) {
+                return $role->getValue();
+            },
+            $user->getRoles()
+        );
+        $this->db->update('user')
+            ->set(
+                [
+                    'name' => $user->getName(),
+                    'password' => $user->getPasswordHash(),
+                    'roles' => $roles,
+                ]
+            )
+            ->where('email', Op::EQUAL(), $user->getEmail())
+            ->execute();
+    }
+
+    public function fetchAllUsers(): \Iterator
+    {
+        $data = $this->db->fetch(self::TABLE)->all();
+        foreach($data as $row) {
+            var_dump($row);
+//            yield $this->translateToUser($row);
+        }
+        exit();
+    }
+
+    /**
+     * @param $data
+     * @return User
+     */
+    private function translateToUser(array $data): User
+    {
+        try {
+            $roles = array_map(
+                function (string $role): Role {
+                    return Role::assert($role);
+                },
+                Db::unserializeArray($data['roles'])
+            );
+        } catch (InvalidArgumentException $e) {
+            throw new DataIntegretyError('Invalid role stored in database');
+        }
+        return new User($data['email'], $data['name'], $data['password'], $roles);
     }
 }

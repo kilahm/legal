@@ -16,7 +16,7 @@ class Provider extends AbstractServiceProvider
 
     public function register(): void
     {
-        $this->container->share(Repository::class)->withArgument(\PDO::class);
+        $this->container->share(Repository::class)->withArgument(Db::class);
         $this->container->share(GetUsers::class)->withArgument(Repository::class);
         $this->container->share(PostUsers::class)->withArgument(Repository::class);
     }

@@ -85,6 +85,17 @@ trait Enum
     }
 
     /**
+     * Return a list of all valid opaque values
+     *
+     * @return string[]
+     */
+    public static function getRawValues()
+    {
+        static::initialize();
+        return array_keys(static::$instancesByValue);
+    }
+
+    /**
      * @param $value
      *
      * @return static
@@ -145,7 +156,7 @@ trait Enum
             throw new \RuntimeException('All enum classes must be final');
         }
         foreach ($mirror->getConstants() as $name => $value) {
-            if(!is_string($value)) {
+            if (!is_string($value)) {
                 throw new \RuntimeException('All enum values must be strings');
             }
             $instance = new static($value);

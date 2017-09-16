@@ -24,8 +24,11 @@ class Provider extends AbstractServiceProvider
      */
     public function register()
     {
-        $this->container->share(LoggerInterface::class, function () {
-            return new Logger('legal api', [new StreamHandler(STDERR)]);
-        });
+        $this->container->share(
+            LoggerInterface::class,
+            function () {
+                return new Logger('legal api', [new StreamHandler(STDERR)]);
+            }
+        );
     }
 }
