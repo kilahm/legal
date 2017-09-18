@@ -6,15 +6,20 @@ namespace App\Persistence;
 use App\Persistence\Query\Insert;
 use App\Persistence\Query\RawFragment;
 use App\Persistence\Query\SqlFragment;
+use Psr\Log\LoggerInterface;
 
 class Db
 {
     /** @var \PDO */
     private $connection;
 
-    public function __construct(\PDO $connection)
+    /** @var LoggerInterface */
+    private $logger;
+
+    public function __construct(\PDO $connection, LoggerInterface $logger)
     {
         $this->connection = $connection;
+        $this->logger = $logger;
     }
 
     public static function raw(string $sql, array $params = []): RawFragment
@@ -115,9 +120,9 @@ class Db
     {
         $sql = $fragment->toSql();
         $params = $fragment->getParameters();
-        // TODO: log query
+        $this->logger->debug($sql);
         $statement = $this->connection->prepare($sql);
-        if(!$statement->execute($params)) {
+        if (!$statement->execute($params)) {
             throw new SqlError($statement->errorInfo());
         }
         return new Response($statement);

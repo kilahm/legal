@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Logging;
 
+use App\Config\Env;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -15,19 +16,12 @@ class Provider extends AbstractServiceProvider
         LoggerInterface::class,
     ];
 
-    /**
-     * Use the register method to register items with the container via the
-     * protected $this->container property or the `getContainer` method
-     * from the ContainerAwareTrait.
-     *
-     * @return void
-     */
     public function register()
     {
         $this->container->share(
             LoggerInterface::class,
             function () {
-                return new Logger('legal api', [new StreamHandler(STDERR)]);
+                return new Logger('legal api', [new StreamHandler(STDERR, Env::getLogLevel())]);
             }
         );
     }

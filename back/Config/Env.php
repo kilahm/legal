@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Config;
 
 use App\Error\ConfigurationError;
+use Psr\Log\LogLevel;
 
 class Env
 {
@@ -23,11 +24,11 @@ class Env
      * @param string $key
      * @return null|string|bool
      */
-    private static function get(string $key)
+    private static function get(string $key, $default = null)
     {
         $value = getenv($key);
         if ($value === false) {
-            return null;
+            return $default;
         }
 
         if (in_array($value, self::TRUE_VALUES)) {
@@ -50,38 +51,43 @@ class Env
         return $value;
     }
 
-    public static function getDbDriver()
+    public static function getDbDriver(): string
     {
         return self::requireString('DB.DRIVER');
     }
 
-    public static function getDbHost()
+    public static function getDbHost(): string
     {
         return self::requireString('DB.HOST');
     }
 
-    public static function getDbPort()
+    public static function getDbPort(): string
     {
         return self::requireString('DB.PORT');
     }
 
-    public static function getDbSchema()
+    public static function getDbSchema(): string
     {
         return self::requireString('DB.SCHEMA');
     }
 
-    public static function getDbUser()
+    public static function getDbUser(): string
     {
         return self::requireString('DB.USER');
     }
 
-    public static function getDbPassword()
+    public static function getDbPassword(): string
     {
         return self::requireString('DB.PASSWORD');
     }
 
-    public static function getJwtSigningKey()
+    public static function getJwtSigningKey(): string
     {
         return self::requireString('JWT.SIGNING_KEY');
+    }
+
+    public static function getLogLevel(): string
+    {
+        return self::get('LOG.LEVEL', LogLevel::DEBUG);
     }
 }
