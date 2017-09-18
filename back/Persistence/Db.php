@@ -123,7 +123,7 @@ class Db
         $this->logger->debug($sql);
         $statement = $this->connection->prepare($sql);
         if (!$statement->execute($params)) {
-            throw new SqlError($statement->errorInfo());
+            throw new SqlError($statement);
         }
         return new Response($statement);
     }

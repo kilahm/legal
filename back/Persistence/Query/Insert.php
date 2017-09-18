@@ -96,7 +96,7 @@ class Insert implements SqlFragment
 
     private function renderFields()
     {
-        return implode('.', $this->fields);
+        return implode(',', $this->fields);
     }
 
     private function renderValues()

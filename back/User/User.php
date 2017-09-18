@@ -40,7 +40,7 @@ class User
         return $this->email;
     }
 
-    public function getPassword(): string
+    public function getPassword(): Password
     {
         return $this->password;
     }

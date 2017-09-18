@@ -6,6 +6,7 @@ namespace App\Persistence;
 use App\Config\Env;
 use League\Container\ServiceProvider\AbstractServiceProvider;
 use PDO;
+use Psr\Log\LoggerInterface;
 
 class Provider extends AbstractServiceProvider
 {
@@ -32,7 +33,9 @@ class Provider extends AbstractServiceProvider
             }
         );
 
-        $this->container->share(Db::class)->withArgument(PDO::class);
+        $this->container->share(Db::class)
+            ->withArgument(PDO::class)
+            ->withArgument(LoggerInterface::class);
         $this->container->share(GetMigrations::class)->withArgument(Db::class);
     }
 }

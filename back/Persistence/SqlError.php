@@ -5,9 +5,18 @@ namespace App\Persistence;
 
 class SqlError extends \LogicException
 {
-    public function __construct(array $errorInfo)
+    /** @var string */
+    private $sql;
+
+    public function __construct(\PDOStatement $statement)
     {
-        var_dump($errorInfo);
-        exit();
+        $info = $statement->errorInfo();
+        $this->sql = $statement->queryString;
+        parent::__construct($info[2], (int)$info[0]);
+    }
+
+    public function getSql(): string
+    {
+        return $this->sql;
     }
 }

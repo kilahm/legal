@@ -46,7 +46,7 @@ class Repository
                 [
                     'email' => $user->getEmail(),
                     'name' => $user->getName(),
-                    'password' => $user->getPassword(),
+                    'password' => $user->getPassword()->getHash(),
                     'roles' => $roles
                 ]
             )

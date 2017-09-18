@@ -31,4 +31,9 @@ class Password
             password_needs_rehash($this->hash, PASSWORD_DEFAULT)
         );
     }
+
+    public function getHash()
+    {
+        return $this->hash;
+    }
 }
