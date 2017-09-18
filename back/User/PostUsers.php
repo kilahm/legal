@@ -37,8 +37,12 @@ class PostUsers
                     Password::fromRaw($input['password']),
                     $input['roles']
                 );
-                $this->repository->createUser($user);
-                return ResponseFactory::json(['user' => Renderer::renderUser($user)]);
+                try {
+                    $this->repository->createUser($user);
+                    return ResponseFactory::json(['user' => Renderer::renderUser($user)]);
+                } catch (DuplicateEmail $e) {
+                    return ResponseFactory::apiError(409, 'This email is already in use');
+                }
             }
         );
 

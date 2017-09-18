@@ -6,6 +6,7 @@ namespace App\User;
 use App\Persistence\DataIntegretyError;
 use App\Persistence\Db;
 use App\Persistence\Query\Constraint\Op;
+use App\Persistence\SqlError;
 use InvalidArgumentException;
 
 class Repository
@@ -41,7 +42,7 @@ class Repository
             },
             $user->getRoles()
         );
-        $this->db->insertInto('user')
+        $statement = $this->db->insertInto('user')
             ->record(
                 [
                     'email' => $user->getEmail(),
@@ -49,8 +50,16 @@ class Repository
                     'password' => $user->getPassword()->getHash(),
                     'roles' => $roles
                 ]
-            )
-            ->execute();
+            );
+        try {
+            $statement->execute();
+        } catch (SqlError $e) {
+            if($e->getCode() === 23505) {
+                // Duplicate key error
+                throw new DuplicateEmail();
+            }
+            throw $e;
+        }
     }
 
     public function updateUser(User $user)
