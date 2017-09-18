@@ -115,15 +115,10 @@ class Db
     {
         $sql = $fragment->toSql();
         $params = $fragment->getParameters();
-        file_put_contents('php://stderr', 'DB Query: ' . $sql);
-        file_put_contents('php://stderr', 'Params: ' . var_export($params, true));
+        // TODO: log query
         $statement = $this->connection->prepare($sql);
-        $result = $statement->execute($params);
-        if ($result) {
-            file_put_contents('php://stderr', 'DB Query Success');
-        } else {
-            file_put_contents('php://stderr', 'DB Query Failed');
-            file_put_contents('php://stderr', $statement->errorInfo());
+        if(!$statement->execute($params)) {
+            throw new SqlError($statement->errorInfo());
         }
         return new Response($statement);
     }

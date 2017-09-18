@@ -46,7 +46,7 @@ class Repository
                 [
                     'email' => $user->getEmail(),
                     'name' => $user->getName(),
-                    'password' => $user->getPasswordHash(),
+                    'password' => $user->getPassword(),
                     'roles' => $roles
                 ]
             )
@@ -65,7 +65,7 @@ class Repository
             ->set(
                 [
                     'name' => $user->getName(),
-                    'password' => $user->getPasswordHash(),
+                    'password' => $user->getPassword(),
                     'roles' => $roles,
                 ]
             )
@@ -76,7 +76,7 @@ class Repository
     public function fetchAllUsers(): \Iterator
     {
         $data = $this->db->fetch(self::TABLE)->all();
-        foreach($data as $row) {
+        foreach ($data as $row) {
             var_dump($row);
 //            yield $this->translateToUser($row);
         }

@@ -31,7 +31,12 @@ class PostUsers
             $this->extractFromRequest(['email', 'name', 'password', 'roles'], $request),
             $this->buildInputValidators(),
             function (array $input) {
-                $user = new User($input['email'], $input['name'], $input['password'], $input['roles']);
+                $user = new User(
+                    $input['email'],
+                    $input['name'],
+                    Password::fromRaw($input['password']),
+                    $input['roles']
+                );
                 $this->repository->createUser($user);
                 return ResponseFactory::json(['user' => Renderer::renderUser($user)]);
             }

@@ -3,8 +3,6 @@ declare(strict_types=1);
 
 namespace App\User;
 
-use App\Auth\CheckPasswordResult;
-
 class User
 {
     /** @var string */
@@ -19,15 +17,11 @@ class User
     /** @var Role[] */
     private $roles;
 
-    public function __construct(string $email, string $name, string $password, array $roles)
+    public function __construct(string $email, string $name, Password $password, array $roles)
     {
         $this->email = $email;
         $this->name = $name;
         $this->roles = $roles;
-        $pInfo = password_get_info($password);
-        if ($pInfo['algo'] === 0) {
-            $this->setPassword($password);
-        }
         $this->password = $password;
     }
 
@@ -46,31 +40,15 @@ class User
         return $this->email;
     }
 
-    public function getPasswordHash(): string
+    public function getPassword(): string
     {
         return $this->password;
     }
 
-    public function withPassword(string $password): self
+    public function withPassword(Password $password): self
     {
         $new = clone $this;
-        $new->setPassword($password);
+        $new->password = $password;
         return $new;
-    }
-
-    public function checkPassword(string $input): CheckPasswordResult
-    {
-        return new CheckPasswordResult(
-            password_verify($input, $this->password),
-            password_needs_rehash($this->password, PASSWORD_DEFAULT)
-        );
-    }
-
-    /**
-     * @param string $password
-     */
-    private function setPassword(string $password): void
-    {
-        $this->password = password_hash($password, PASSWORD_DEFAULT);
     }
 }
