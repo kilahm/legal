@@ -21,7 +21,7 @@ class Provider extends AbstractServiceProvider
         $this->container->share(
             LoggerInterface::class,
             function () {
-                return new Logger('legal api', [new StreamHandler(STDERR, Env::getLogLevel())]);
+                return new Logger('legal api', [new StreamHandler('php://stdout', Env::getLogLevel())]);
             }
         );
     }

@@ -54,7 +54,7 @@ class Repository
         try {
             $statement->execute();
         } catch (SqlError $e) {
-            if($e->getCode() === 23505) {
+            if ($e->getCode() === 23505) {
                 // Duplicate key error
                 throw new DuplicateEmail();
             }
@@ -86,8 +86,7 @@ class Repository
     {
         $data = $this->db->fetch(self::TABLE)->all();
         foreach ($data as $row) {
-            var_dump($row);
-//            yield $this->translateToUser($row);
+            yield $this->translateToUser($row);
         }
         exit();
     }
@@ -108,6 +107,11 @@ class Repository
         } catch (InvalidArgumentException $e) {
             throw new DataIntegretyError('Invalid role stored in database');
         }
-        return new User($data['email'], $data['name'], $data['password'], $roles);
+        try {
+            $password = new Password($data['password']);
+        } catch (InvalidArgumentException $e) {
+            throw new DataIntegretyError('Invalid password hash stored in database');
+        }
+        return new User($data['email'], $data['name'], $password, $roles);
     }
 }

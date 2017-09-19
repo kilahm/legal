@@ -68,6 +68,7 @@ export class Client {
     if (this.jwt) {
       heads.set('Authorization', 'Bearer ' + this.jwt);
     }
+    heads.set('Accept', 'application/json');
     return heads;
   }
 

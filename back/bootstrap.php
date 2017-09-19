@@ -1,8 +1,8 @@
 <?php
 declare(strict_types=1);
 
-use App\Auth\Middleware as AuthMiddleware;
 use App\Auth\PostLogin;
+use App\Error\Middleware as ErrorMiddleware;
 use App\Persistence\GetMigrations;
 use App\User\GetUsers;
 use App\User\PostUsers;
@@ -23,6 +23,7 @@ function fill_container(Container $container): Container
     $container->addServiceProvider(\App\Auth\Provider::class);
     $container->addServiceProvider(\App\Persistence\Provider::class);
     $container->addServiceProvider(\App\User\Provider::class);
+    $container->addServiceProvider(\App\Error\Provider::class);
     return $container;
 }
 
@@ -44,5 +45,6 @@ function set_routes(App $app): App
 
 function set_global_middleware(App $app): App
 {
+    $app->add(ErrorMiddleware::class);
     return $app;
 }

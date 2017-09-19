@@ -17,13 +17,10 @@ class GetMigrations
 
     public function __invoke()
     {
-        $statement = $this->db->prepare(
-            <<<'SQL'
+        $sql = <<<'SQL'
 SELECT migration_name AS "name", extract(EPOCH FROM start_time) AS "start" FROM phinxlog
-SQL
-        );
-        $statement->execute();
-        $data = $statement->fetchAll(\PDO::FETCH_ASSOC);
-        return ResponseFactory::json(['migrations' => $data]);
+SQL;
+        $data = $this->db->execute(Db::raw($sql))->fetchAll();
+        return ResponseFactory::json(['migrations' => iterator_to_array($data)]);
     }
 }
