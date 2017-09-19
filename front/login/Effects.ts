@@ -14,13 +14,13 @@ export class Effects {
   ) {
   }
 
-  async login(user: string, password: string): Promise<void> {
+  async login(email: string, password: string): Promise<void> {
     try {
 
       await this.dispatch<Promise<void>, undefined>(
         actions.submitFields(
           'login.model',
-          this.api.login(user, password),
+          this.api.login(email, password),
         ),
       );
 

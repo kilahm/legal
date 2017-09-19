@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\User;
 
+use App\Output\Renderer;
 use App\Output\ResponseFactory;
 
 class GetUsers
@@ -18,9 +19,9 @@ class GetUsers
     public function __invoke()
     {
         $users = [];
-        foreach($this->repository->fetchAllUsers() as $user) {
-            $users[] = $user;
+        foreach ($this->repository->fetchAllUsers() as $user) {
+            $users[] = Renderer::renderUser($user);
         }
-        return ResponseFactory::json(['users' => $user]);
+        return ResponseFactory::json(['users' => $users]);
     }
 }

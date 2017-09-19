@@ -3,7 +3,7 @@ import {combineReducers} from 'redux';
 import {FormState} from '../util';
 
 export interface Model {
-  user: string;
+  email: string;
   password: string;
 }
 
@@ -11,7 +11,7 @@ export interface State extends FormState<Model> {
 }
 
 const initialValues: Model = {
-  user: '',
+  email: '',
   password: '',
 };
 

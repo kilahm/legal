@@ -29,8 +29,8 @@ export class Client {
   constructor(@inject('Http') private http: Http) {
   }
 
-  async login(user: string, password: string): Promise<void> {
-    const response = await this.post<LoginResponse>('/api/login', {user, password});
+  async login(email: string, password: string): Promise<void> {
+    const response = await this.post<LoginResponse>('/api/login', {email, password});
     if (!response.ok) {
       throw new ApiError('Unable to log in');
     }
@@ -38,7 +38,6 @@ export class Client {
   }
 
   private requestOptions(options: Partial<RequestInit>): RequestInit {
-
     return {
       ...Client.defaultRequestOptions,
       ...options,
@@ -69,6 +68,7 @@ export class Client {
       heads.set('Authorization', 'Bearer ' + this.jwt);
     }
     heads.set('Accept', 'application/json');
+    heads.set('content-type', 'application/json');
     return heads;
   }
 

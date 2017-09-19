@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Auth;
 
 use App\Config\Env;
+use App\User\Repository;
 use Lcobucci\JWT\Signer;
 use League\Container\Argument\RawArgument;
 use League\Container\ServiceProvider\AbstractServiceProvider;
@@ -13,13 +14,11 @@ class Provider extends AbstractServiceProvider
 
     protected $provides = [
         PostLogin::class,
-        LoginRepository::class,
     ];
 
     public function register()
     {
-        $this->container->share(LoginRepository::class)->withArgument(\PDO::class);
-        $this->container->share(PostLogin::class)->withArgument(LoginRepository::class);
+        $this->container->share(PostLogin::class)->withArgument(Repository::class);
         $this->container->share(
             Signer::class,
             function () {

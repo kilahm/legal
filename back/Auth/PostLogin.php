@@ -7,8 +7,8 @@ use App\Input\Input;
 use App\Input\Validator\Email;
 use App\Input\Validator\StringValue;
 use App\Output\ResponseFactory;
+use App\User\Password;
 use App\User\Repository;
-use App\User\User;
 use App\Util\ControllerUtils;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
@@ -41,12 +41,12 @@ class PostLogin
                     return $this->preventTimingAttack();
                 }
 
-                $result = $user->checkPassword($data['password']);
+                $result = $user->getPassword()->check($data['password']);
                 if (!$result->isMatch()) {
                     return ResponseFactory::apiError(403, self::BAD_PASSWORD_MESSAGE);
                 }
                 if ($result->needsRehash()) {
-                    $this->repository->updateUser($user->withPassword($data['password']));
+                    $this->repository->updateUser($user->withPassword(Password::fromRaw($data['password'])));
                 }
                 return ResponseFactory::json(['jwt' => 'somejwt']);
             }
@@ -55,7 +55,7 @@ class PostLogin
 
     private function preventTimingAttack()
     {
-        (new User('', '', '', []))->checkPassword('');
+        Password::fromRaw('')->check('');
         return ResponseFactory::apiError(403, self::BAD_PASSWORD_MESSAGE);
     }
 }

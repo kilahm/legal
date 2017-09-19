@@ -16,11 +16,11 @@ const LoginComponent = (effects: Effects, {pending}: LoginProps): JSX.Element =>
     <Form
       model="login.model"
       validators={{
-        user: {required: v => v && v.length},
+        email: {required: v => v && v.length},
         password: {required: v => v && v.length},
       }}
       validateOn='submit'
-      onSubmit={async ({user, password}: LoginModel) => await effects.login(user, password)}
+      onSubmit={async ({email, password}: LoginModel) => await effects.login(email, password)}
     >
 
       <div className="row">
@@ -37,19 +37,20 @@ const LoginComponent = (effects: Effects, {pending}: LoginProps): JSX.Element =>
             wrapper={({children}) => (
               <div>{children}</div>
             )}
-            model=".user"
+            model=".email"
             show={{touched: true}}
             messages={{
-              required: 'Please include your user name',
+              required: 'Please include your email',
             }}
           />
           <div className="form-group">
             <label htmlFor="login-user">
-              User Name
+              Email
             </label>
-            <Control.text
+            <Control.input
+              type="email"
               id="login-user"
-              model=".user"
+              model=".email"
               className="form-control"
               disabled={pending}
             />

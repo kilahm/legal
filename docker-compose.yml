@@ -23,6 +23,7 @@ services:
       DB.SCHEMA: minutes
       DB.USER: root
       DB.PASSWORD: secret
+      JWT.SIGNING_KEY: supersecret
   front:
     image: node:8-alpine
     entrypoint:

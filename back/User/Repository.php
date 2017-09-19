@@ -84,11 +84,13 @@ class Repository
 
     public function fetchAllUsers(): \Iterator
     {
-        $data = $this->db->fetch(self::TABLE)->all();
+        $data = $this->db
+            ->fetch(self::TABLE)
+            ->fields('name', 'password', 'email', 'roles')
+            ->all();
         foreach ($data as $row) {
             yield $this->translateToUser($row);
         }
-        exit();
     }
 
     /**
