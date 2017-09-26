@@ -15,6 +15,8 @@ class Repository
 
     /** @var Db */
     private $db;
+    /** @var bool|null */
+    private $adminExists;
 
     public function __construct(Db $db)
     {
@@ -121,12 +123,19 @@ class Repository
 
     public function adminExists(): bool
     {
+        // Memoize the result
+        if ($this->adminExists !== null) {
+            return $this->adminExists;
+        }
+
         $result = $this->db->execute(
             Db::raw(
                 'SELECT EXISTS(SELECT "user"."email" FROM "user" WHERE ? = ANY("user"."roles")) AS "exists"',
                 [Role::ADMIN]
             )
         )->fetchOne();
-        return (bool)$result['exists'];
+
+        $this->adminExists = (bool)$result['exists'];
+        return $this->adminExists;
     }
 }

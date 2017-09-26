@@ -47,4 +47,9 @@ class ResponseFactory
             new Body(fopen($finfo->getRealPath(), 'r'))
         );
     }
+
+    public static function notLoggedIn()
+    {
+        return self::apiError(403, 'Must be logged in');
+    }
 }

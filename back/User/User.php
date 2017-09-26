@@ -59,4 +59,9 @@ class User
         $new->password = $password;
         return $new;
     }
+
+    public function hasRole(Role $role)
+    {
+        return in_array($role, $this->roles);
+    }
 }

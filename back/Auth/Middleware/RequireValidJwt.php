@@ -1,14 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Auth;
+namespace App\Auth\Middleware;
 
 use App\Auth\Jwt\Manager;
 use App\Output\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-class Middleware
+class RequireValidJwt
 {
     /** @var Manager */
     private $factory;

@@ -4,6 +4,9 @@ declare(strict_types=1);
 namespace App\Auth;
 
 use App\Auth\Jwt\Manager;
+use App\Auth\Middleware\RequireAdmin;
+use App\Auth\Middleware\RequireValidJwt;
+use App\Auth\Middleware\RequireValidUser;
 use App\Config\Env;
 use App\Config\GetState;
 use App\User\Repository;
@@ -19,9 +22,11 @@ class Provider extends AbstractServiceProvider
         PostLogin::class,
         Signer::class,
         Manager::class,
-        Middleware::class,
+        RequireValidJwt::class,
         GetState::class,
         'JWT User',
+        RequireValidUser::class,
+        RequireAdmin::class,
     ];
 
     public function register()
@@ -32,19 +37,15 @@ class Provider extends AbstractServiceProvider
 
         $this->container->share(Signer::class, Signer\Hmac\Sha256::class);
 
-        $this->container->share(Manager::class)->withArguments(
-            [
-                new RawArgument(Env::getJwtSigningKey()),
-                Signer::class,
-                ValidationData::class,
-            ]
-        );
+        $this->container->share(Manager::class)
+            ->withArgument(new RawArgument(Env::getJwtSigningKey()))
+            ->withArgument(Signer::class)
+            ->withArgument(ValidationData::class);
 
         // TODO: probably nothing else to validate here.  I'm really using this as a session token. :(
         $this->container->share(ValidationData::class);
-        $this->container->share(Middleware::class)
-            ->withArgument(Manager::class)
-            ->withArgument(ValidationData::class);
+        $this->container->share(RequireValidJwt::class)
+            ->withArgument(Manager::class);
 
         $this->container->share(
             'JWT User',
@@ -59,5 +60,10 @@ class Provider extends AbstractServiceProvider
 
         $this->container->share(GetState::class)
             ->withArgument(Repository::class);
+
+        $this->container->share(RequireValidUser::class)
+            ->withArgument('JWT User');
+        $this->container->share(RequireAdmin::class)
+            ->withArgument('JWT User');
     }
 }

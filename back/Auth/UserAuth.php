@@ -3,10 +3,11 @@ declare(strict_types=1);
 
 namespace App\Auth;
 
+use App\Auth\Middleware\RequireValidJwt;
 use App\User\Role;
 use App\Util\Arr;
 
-class UserAuth extends Middleware
+class UserAuth extends RequireValidJwt
 {
     protected function validatePayload(array $payload): ?string
     {

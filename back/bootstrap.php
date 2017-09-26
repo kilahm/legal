@@ -1,19 +1,19 @@
 <?php
 declare(strict_types=1);
 
+use App\Auth\MiddlewareFactory as AuthMiddlewareFactory;
 use App\Auth\PostLogin;
 use App\Config\GetState;
 use App\Error\Middleware as ErrorMiddleware;
 use App\Persistence\GetMigrations;
 use App\User\GetUsers;
-use App\User\PostUsers;
 use League\Container\Container;
 use Slim\App;
 
 require dirname(__DIR__) . '/vendor/autoload.php';
 
 $container = fill_container(new Container());
-$app = set_global_middleware(set_routes(new App($container)));
+$app = set_global_middleware(set_routes(new App($container), $container->get(AuthMiddlewareFactory::class)));
 $app->run();
 
 
@@ -34,11 +34,28 @@ function set_routes(App $app): App
         '/api',
         function () use ($app) {
 
+            // These require no auth
             $app->get('/state', GetState::class);
             $app->post('/login', PostLogin::class);
-            $app->get('/migrations', GetMigrations::class);
-            $app->get('/users', GetUsers::class);
-            $app->post('/users', PostUsers::class);
+
+            // This uses custom auth
+            $app->post('/user', \App\User\PostUsers::class);
+
+            // These require valid user
+            $app->group(
+                '',
+                function () use ($app) {
+                    $app->get('/users', GetUsers::class);
+                }
+            )->add(\App\Auth\Middleware\RequireValidUser::class);
+
+            // These require admin
+            $app->group(
+                '',
+                function () use ($app) {
+                    $app->get('/migrations', GetMigrations::class);
+                }
+            )->add(\App\Auth\Middleware\RequireAdmin::class);
         }
     );
 
