@@ -29,7 +29,7 @@ class Enum implements Validator
         }
 
         $this->coerce = $classMirror->getMethod('coerce');
-        $this->validValues = $classMirror->getMethod('getValues')->invoke(null);
+        $this->validValues = $classMirror->getMethod('getRawValues')->invoke(null);
     }
 
     public function validate($value): ValidationResult

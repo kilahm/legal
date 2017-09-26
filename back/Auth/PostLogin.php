@@ -7,8 +7,8 @@ use App\Input\Input;
 use App\Input\Validator\Email;
 use App\Input\Validator\StringValue;
 use App\Output\ResponseFactory;
-use App\User\Password;
-use App\User\Repository;
+use App\User\Repository as UserRepository;
+use App\User\ValidPassword;
 use App\Util\ControllerUtils;
 use Psr\Http\Message\ResponseInterface;
 use Slim\Http\Request;
@@ -19,12 +19,17 @@ class PostLogin
 
     const BAD_PASSWORD_MESSAGE = 'Incorrect email or password';
 
-    /** @var Repository */
+    /** @var UserRepository */
     private $repository;
+    /**
+     * @var Jwt\Manager
+     */
+    private $jwtManager;
 
-    public function __construct(Repository $repository)
+    public function __construct(UserRepository $repository, Jwt\Manager $jwtManager)
     {
         $this->repository = $repository;
+        $this->jwtManager = $jwtManager;
     }
 
     public function __invoke(Request $request): ResponseInterface
@@ -46,16 +51,16 @@ class PostLogin
                     return ResponseFactory::apiError(403, self::BAD_PASSWORD_MESSAGE);
                 }
                 if ($result->needsRehash()) {
-                    $this->repository->updateUser($user->withPassword(Password::fromRaw($data['password'])));
+                    $this->repository->updateUser($user->withPassword(ValidPassword::fromRaw($data['password'])));
                 }
-                return ResponseFactory::json(['jwt' => 'somejwt']);
+                return ResponseFactory::json(['jwt' => $this->jwtManager->buildTokenFromUser($user)]);
             }
         );
     }
 
     private function preventTimingAttack()
     {
-        Password::fromRaw('')->check('');
+        ValidPassword::fromRaw('')->check('');
         return ResponseFactory::apiError(403, self::BAD_PASSWORD_MESSAGE);
     }
 }

@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use App\Auth\PostLogin;
+use App\Config\GetState;
 use App\Error\Middleware as ErrorMiddleware;
 use App\Persistence\GetMigrations;
 use App\User\GetUsers;
@@ -33,6 +34,7 @@ function set_routes(App $app): App
         '/api',
         function () use ($app) {
 
+            $app->get('/state', GetState::class);
             $app->post('/login', PostLogin::class);
             $app->get('/migrations', GetMigrations::class);
             $app->get('/users', GetUsers::class);

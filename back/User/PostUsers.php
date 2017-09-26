@@ -34,7 +34,7 @@ class PostUsers
                 $user = new User(
                     $input['email'],
                     $input['name'],
-                    Password::fromRaw($input['password']),
+                    ValidPassword::fromRaw($input['password']),
                     $input['roles']
                 );
                 try {

@@ -1,39 +1,23 @@
 <?php
-declare(strict_types=1);
 
 namespace App\User;
 
 use App\Auth\CheckPasswordResult;
 
-class Password
+interface Password
 {
-    /** @var string */
-    private $hash;
+    /**
+     * Perform a timing attack resistant check on a raw unhashed password
+     */
+    public function check(string $rawPassword): CheckPasswordResult;
 
-    public static function fromRaw(string $rawPassword): Password
-    {
-        return new Password(password_hash($rawPassword, PASSWORD_DEFAULT));
-    }
+    /**
+     * Fetch the password hash, including salt and hash method
+     */
+    public function getHash(): string;
 
-    public function __construct(string $hash)
-    {
-        $pInfo = password_get_info($hash);
-        if ($pInfo['algo'] === 0) {
-            throw new \InvalidArgumentException('Invalid password hash');
-        }
-        $this->hash = $hash;
-    }
-
-    public function check(string $rawPassword): CheckPasswordResult
-    {
-        return new CheckPasswordResult(
-            password_verify($rawPassword, $this->hash),
-            password_needs_rehash($this->hash, PASSWORD_DEFAULT)
-        );
-    }
-
-    public function getHash()
-    {
-        return $this->hash;
-    }
+    /**
+     * Flag indicating the password is valid
+     */
+    public function isValid(): bool;
 }

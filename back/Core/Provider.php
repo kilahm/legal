@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Core;
 
 use League\Container\ServiceProvider\AbstractServiceProvider;
+use Psr\Http\Message\ServerRequestInterface;
 use Slim\CallableResolver;
 use Slim\Handlers\Error;
 use Slim\Handlers\NotAllowed;
@@ -49,6 +50,12 @@ class Provider extends AbstractServiceProvider
 
         $this->container->share(
             'request',
+            function () {
+                return $this->container->get(ServerRequestInterface::class);
+            }
+        );
+        $this->container->share(
+            ServerRequestInterface::class,
             function () {
                 return Request::createFromEnvironment($this->container->get('environment'));
             }

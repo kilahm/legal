@@ -70,14 +70,16 @@ class Repository
             },
             $user->getRoles()
         );
+        $data = [
+            'name' => $user->getName(),
+            'roles' => $roles,
+        ];
+        $password = $user->getPassword();
+        if ($password->isValid()) {
+            $fields['password'] = $password->getHash();
+        }
         $this->db->update('user')
-            ->set(
-                [
-                    'name' => $user->getName(),
-                    'password' => $user->getPassword(),
-                    'roles' => $roles,
-                ]
-            )
+            ->set($data)
             ->where('email', Op::EQUAL(), $user->getEmail())
             ->execute();
     }
@@ -110,10 +112,21 @@ class Repository
             throw new DataIntegretyError('Invalid role stored in database');
         }
         try {
-            $password = new Password($data['password']);
+            $password = new ValidPassword($data['password']);
         } catch (InvalidArgumentException $e) {
             throw new DataIntegretyError('Invalid password hash stored in database');
         }
         return new User($data['email'], $data['name'], $password, $roles);
+    }
+
+    public function adminExists(): bool
+    {
+        $result = $this->db->execute(
+            Db::raw(
+                'SELECT EXISTS(SELECT "user"."email" FROM "user" WHERE ? = ANY("user"."roles")) AS "exists"',
+                [Role::ADMIN]
+            )
+        )->fetchOne();
+        return (bool)$result['exists'];
     }
 }

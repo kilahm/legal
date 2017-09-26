@@ -21,10 +21,18 @@ class User
     {
         $this->email = $email;
         $this->name = $name;
-        $this->roles = $roles;
+        $this->roles = array_filter(
+            $roles,
+            function ($role): bool {
+                return $role instanceof Role;
+            }
+        );
         $this->password = $password;
     }
 
+    /**
+     * @return Role[]
+     */
     public function getRoles(): array
     {
         return $this->roles;
@@ -45,7 +53,7 @@ class User
         return $this->password;
     }
 
-    public function withPassword(Password $password): self
+    public function withPassword(ValidPassword $password): self
     {
         $new = clone $this;
         $new->password = $password;
