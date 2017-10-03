@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Test\Persistence;
+namespace Test\Unit\Persistence;
 
 use App\Persistence\Db;
 use App\Persistence\Query\RawFragment;

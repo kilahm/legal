@@ -12,6 +12,7 @@ class Provider extends AbstractServiceProvider
         Repository::class,
         GetUsers::class,
         PostUsers::class,
+        PostUsersAuth::class
     ];
 
     public function register(): void
@@ -19,5 +20,8 @@ class Provider extends AbstractServiceProvider
         $this->container->share(Repository::class)->withArgument(Db::class);
         $this->container->share(GetUsers::class)->withArgument(Repository::class);
         $this->container->share(PostUsers::class)->withArgument(Repository::class);
+        $this->container->share(PostUsersAuth::class)
+            ->withArgument('JWT User')
+            ->withArgument(Repository::class);
     }
 }

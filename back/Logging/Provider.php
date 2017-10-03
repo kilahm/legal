@@ -14,6 +14,7 @@ class Provider extends AbstractServiceProvider
 
     protected $provides = [
         LoggerInterface::class,
+        Middleware::class,
     ];
 
     public function register()
@@ -24,5 +25,8 @@ class Provider extends AbstractServiceProvider
                 return new Logger('legal api', [new StreamHandler('php://stdout', Env::getLogLevel())]);
             }
         );
+
+        $this->container->share(Middleware::class)
+            ->withArgument(LoggerInterface::class);
     }
 }

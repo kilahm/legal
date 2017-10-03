@@ -13,4 +13,12 @@ environments:
         pass: 'secret'
         port: 5432
         charset: utf8
+    integration:
+        adapter: pgsql
+        host: db
+        name: integration
+        user: root
+        pass: 'secret'
+        port: 5432
+        charset: utf8
 version_order: creation

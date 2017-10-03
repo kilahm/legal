@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-use App\Auth\MiddlewareFactory as AuthMiddlewareFactory;
 use App\Auth\PostLogin;
 use App\Config\GetState;
 use App\Error\Middleware as ErrorMiddleware;
+use App\Logging\Middleware as LoggingMiddleware;
 use App\Persistence\GetMigrations;
 use App\User\GetUsers;
 use League\Container\Container;
 use Slim\App;
 
-require dirname(__DIR__) . '/vendor/autoload.php';
-
-$container = fill_container(new Container());
-$app = set_global_middleware(set_routes(new App($container), $container->get(AuthMiddlewareFactory::class)));
-$app->run();
+function build_app(?Container $container = null): App
+{
+    $container = $container ?: fill_container(new Container());
+    return set_global_middleware(set_routes(new App($container)));
+}
 
 
 function fill_container(Container $container): Container
@@ -38,8 +38,8 @@ function set_routes(App $app): App
             $app->get('/state', GetState::class);
             $app->post('/login', PostLogin::class);
 
-            // This uses custom auth
-            $app->post('/user', \App\User\PostUsers::class);
+            $app->post('/users', \App\User\PostUsers::class)
+                ->add(\App\User\PostUsersAuth::class);
 
             // These require valid user
             $app->group(
@@ -65,5 +65,6 @@ function set_routes(App $app): App
 function set_global_middleware(App $app): App
 {
     $app->add(ErrorMiddleware::class);
+    $app->add(LoggingMiddleware::class);
     return $app;
 }

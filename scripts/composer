@@ -1,0 +1,2 @@
+#!/usr/bin/env bash
+docker run --rm -t -v $(pwd):/app -w /app composer $@

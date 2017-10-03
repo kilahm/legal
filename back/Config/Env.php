@@ -90,4 +90,9 @@ class Env
     {
         return self::get('LOG.LEVEL', LogLevel::DEBUG);
     }
+
+    public static function set(string $key, string $value)
+    {
+        putenv("$key=$value");
+    }
 }

@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace Test\Persistence\Query;
+namespace Test\Unit\Persistence\Query;
 
 use App\Persistence\Db;
 use App\Persistence\Query\Constraint\Op;

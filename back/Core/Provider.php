@@ -48,18 +48,22 @@ class Provider extends AbstractServiceProvider
 
         $this->container->share('environment', new Environment($_SERVER));
 
-        $this->container->share(
+        $this->container->add(
             'request',
             function () {
                 return $this->container->get(ServerRequestInterface::class);
             }
         );
-        $this->container->share(
-            ServerRequestInterface::class,
-            function () {
-                return Request::createFromEnvironment($this->container->get('environment'));
-            }
-        );
+
+        // Do not overwrite an existing instance of ServerRequestInterface to allow integration tests to set it
+        if (!$this->container->has(ServerRequestInterface::class)) {
+            $this->container->share(
+                ServerRequestInterface::class,
+                function () {
+                    return Request::createFromEnvironment($this->container->get('environment'));
+                }
+            );
+        }
 
         $this->container->share(
             'response',
