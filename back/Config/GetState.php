@@ -20,6 +20,6 @@ class GetState
 
     public function __invoke(ServerRequestInterface $request): ResponseInterface
     {
-        return ResponseFactory::json(['hasAdmin' => $this->userRepo->adminExists()]);
+        return ResponseFactory::json(['state' => ['hasAdmin' => $this->userRepo->adminExists()]]);
     }
 }

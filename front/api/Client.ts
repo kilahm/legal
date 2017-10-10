@@ -1,5 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {Http} from './Http';
+import {ServerState} from './ServerState';
 
 export class ApiError extends Error {
 }
@@ -12,6 +13,10 @@ interface TypedResponse<ResponseType> {
 
 interface LoginResponse {
   jwt: string;
+}
+
+interface ServerStateResponse {
+  state: ServerState;
 }
 
 @injectable()
@@ -37,12 +42,12 @@ export class Client {
     this.jwt = response.body.jwt;
   }
 
-  private requestOptions(options: Partial<RequestInit>): RequestInit {
-    return {
-      ...Client.defaultRequestOptions,
-      ...options,
-      headers: this.buildHeaders(options.headers),
-    };
+  async getState(): Promise<ServerState> {
+    const response = await this.get<ServerStateResponse>('/api/state');
+    if(!response.ok) {
+      throw new ApiError('Unable to get server state');
+    }
+    return response.body.state;
   }
 
   private async post<Tresponse>(
@@ -60,6 +65,29 @@ export class Client {
         }),
       )),
     );
+  }
+
+  private async get<Tresponse>(
+    path: string,
+    options: Partial<RequestInit> = {},
+  ): Promise<TypedResponse<Tresponse>> {
+    return Client.handle<Tresponse>(
+      await this.http.execute(new Request(
+        path,
+        this.requestOptions({
+          ...options,
+          method: 'GET',
+        }),
+      )),
+    );
+  }
+
+  private requestOptions(options: Partial<RequestInit>): RequestInit {
+    return {
+      ...Client.defaultRequestOptions,
+      ...options,
+      headers: this.buildHeaders(options.headers),
+    };
   }
 
   private buildHeaders(headers: Headers | undefined): Headers {
