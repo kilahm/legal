@@ -31,7 +31,7 @@ function bootstrap() {
 function setRouteFromBrowser() {
   const routerActions = container.get<RouterActions>(RouterActions);
   const location = new URL(document.location.toString());
-  store.dispatch(routerActions.updateRoute(location.pathname, location.searchParams));
+  store.dispatch(routerActions.changeRoute(location.pathname, location.search));
 }
 
 async function updateServerState() {
@@ -40,6 +40,6 @@ async function updateServerState() {
   const state = await api.getState();
   if (!state.hasAdmin) {
     console.log('setting route to /createAdmin');
-    store.dispatch(routerActions.updateRoute('/createAdmin'));
+    store.dispatch(routerActions.changeRoute('/createAdmin'));
   }
 }

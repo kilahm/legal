@@ -5,7 +5,7 @@ import {injectable} from 'inversify';
 export class Actions {
   public static readonly CHANGE_ROUTE: Symbol = Symbol('router.change-route');
 
-  public updateRoute(path: string, query: URLSearchParams|null = null): ChangeRoute {
+  public changeRoute(path: string, query: string|null = null): ChangeRoute {
     return {
       type: Actions.CHANGE_ROUTE,
       payload: {path, query},
@@ -20,7 +20,6 @@ export class Actions {
 export interface ChangeRoute extends Action {
   payload: {
     path: string,
-    query: URLSearchParams|null,
+    query: string|null,
   },
 }
-

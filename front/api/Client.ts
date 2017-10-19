@@ -34,12 +34,12 @@ export class Client {
   constructor(@inject('Http') private http: Http) {
   }
 
-  async login(email: string, password: string): Promise<void> {
+  async login(email: string, password: string): Promise<LoginResponse> {
     const response = await this.post<LoginResponse>('/api/login', {email, password});
     if (!response.ok) {
       throw new ApiError('Unable to log in');
     }
-    this.jwt = response.body.jwt;
+    return response.body;
   }
 
   async getState(): Promise<ServerState> {

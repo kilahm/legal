@@ -2,16 +2,16 @@ import * as React from 'react';
 import {Control, Errors, Form} from 'react-redux-form';
 import {createInjector} from '../container';
 import {Model as LoginModel} from './reducer';
-import {Effects} from './Effects';
 import {State} from '../store/reducer';
 import {connect, MapStateToProps} from 'react-redux';
+import {Actions} from './Actions';
 
 interface LoginProps {
   pending: boolean;
 }
 
 type LoginFn = (props: LoginProps) => JSX.Element;
-const LoginComponent = (effects: Effects, {pending}: LoginProps): JSX.Element => (
+const LoginComponent = (actions: Actions, {pending}: LoginProps): JSX.Element => (
   <div className="col-xs-12">
     <Form
       model="login.model"
@@ -20,7 +20,7 @@ const LoginComponent = (effects: Effects, {pending}: LoginProps): JSX.Element =>
         password: {required: v => v && v.length},
       }}
       validateOn='submit'
-      onSubmit={async ({email, password}: LoginModel) => await effects.login(email, password)}
+      onSubmit={async ({email, password}: LoginModel) => await actions.loginWithEmailAndPassword(email, password)}
     >
 
       <div className="row">
@@ -85,7 +85,7 @@ const LoginComponent = (effects: Effects, {pending}: LoginProps): JSX.Element =>
   </div>
 );
 
-const InjectedLogin = createInjector<Effects>(Effects)<Effects, JSX.Element, LoginFn>(LoginComponent);
+const InjectedLogin = createInjector<Actions>(Actions)<Actions, JSX.Element, LoginFn>(LoginComponent);
 
 const stateMap: MapStateToProps<LoginProps, {}> = (state: State): LoginProps => {
   return {

@@ -1,17 +1,23 @@
 import {ContainerModule} from 'inversify';
-import {applyMiddleware, createStore, Dispatch, Store} from 'redux';
+import {applyMiddleware, createStore, Store} from 'redux';
 import {default as reducer, State} from './reducer';
-import thunk from 'redux-thunk';
 import {composeWithDevTools} from 'redux-devtools-extension';
-
-const store = createStore(
-  reducer,
-  composeWithDevTools(
-    applyMiddleware(thunk),
-  ),
-);
+import effects from '../effects';
+import {EffectManager} from './EffectManager';
+import {Effect} from './Effect';
 
 export default new ContainerModule(bind => {
-  bind<Dispatch<State>>('dispatch').toConstantValue(store.dispatch);
-  bind<Store<State>>('store').toConstantValue(store);
+  bind<Effect[]>('effects').toConstantValue(effects);
+  bind<EffectManager>(EffectManager).toSelf();
+  bind<Store<State>>('store').toDynamicValue(context => {
+    const em = context.container.get<EffectManager>(EffectManager);
+    return createStore(
+      reducer,
+      composeWithDevTools(
+        applyMiddleware(
+          em.buildMiddleware(),
+        ),
+      ),
+    );
+  });
 });
