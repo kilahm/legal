@@ -6,4 +6,8 @@ export const routes: Route[] = [
     pattern: /^\/meetings$/,
     factory: () => <h1>Meetings page</h1>,
   },
+  {
+    pattern: /^\/createAdmin$/,
+    factory: () => <h1>Create admin page</h1>,
+  },
 ];

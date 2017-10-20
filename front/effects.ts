@@ -1,6 +1,8 @@
 import loginEffects from './login/effects/index';
-import {container} from './container';
+import routerEffects from './router/effects';
+import {Effect} from './store/Effect';
 
-export default [
+export const EffectClasses: Array<{ new (...args: any[]): Effect }> = [
   ...loginEffects,
-].map(effectClass => container.get(effectClass));
+  ...routerEffects,
+];

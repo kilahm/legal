@@ -1,6 +1,7 @@
 import {formReducer, modelReducer} from 'react-redux-form';
 import {combineReducers} from 'redux';
 import {FormState} from '../util';
+import {Actions} from './Actions';
 
 export interface Model {
   email: string;
@@ -8,6 +9,7 @@ export interface Model {
 }
 
 export interface State extends FormState<Model> {
+  readonly jwt: string;
 }
 
 const initialValues: Model = {
@@ -16,6 +18,7 @@ const initialValues: Model = {
 };
 
 export const reducer = combineReducers({
+  jwt: (jwt = '', action) => Actions.isSetUserJwt(action) ? action.payload.jwt : jwt,
   model: modelReducer('login.model', initialValues),
   form: formReducer('login.model', initialValues),
 });

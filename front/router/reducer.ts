@@ -3,17 +3,20 @@ import {Actions} from './Actions';
 
 export interface State {
   path: string | null;
-  query: URLSearchParams | null;
+  query: string | null;
+  title: string | null;
 }
 
 const initialState: State = {
   path: null,
   query: null,
+  title: null,
 };
 
 export function reducer(state: State = initialState, action: Action): State {
-  if (Actions.isChangeRoute(action)) {
-    return {...state, path: action.payload.path, query: action.payload.query};
+  if (Actions.isChangeRoute(action) || Actions.isSetRoute(action)) {
+    const {path, query, title} = action.payload;
+    return {...state, path, query: query || null, title: title || null};
   }
   return state;
 }

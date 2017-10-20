@@ -36,7 +36,7 @@ class Provider extends AbstractServiceProvider
         $this->container->share(
             'settings',
             [
-                'httpVersion' => '1.1',
+                'httpVersion' => '2.0',
                 'responseChunkSize' => 4096,
                 'outputBuffering' => 'append',
                 'determineRouteBeforeAppMiddleware' => false,

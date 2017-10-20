@@ -1,14 +1,16 @@
 import {Action} from 'redux';
 import {injectable} from 'inversify';
-import {actions} from 'react-redux-form';
+import {actions, FieldAction} from 'react-redux-form';
+
 @injectable()
 export class Actions {
   private static readonly EMAIL_PASSWORD: Symbol = Symbol('with email');
   private static readonly SET_JWT = Symbol('set jwt');
 
-  public setLoginFormErrors() {
-    return actions.setErrors('')
+  public setLoginFormErrors(message: string): FieldAction {
+    return actions.setErrors('login.model', message);
   }
+
   public loginWithEmailAndPassword(email: string, password: string): LoginWithEmailAndPassword {
     return {
       type: Actions.EMAIL_PASSWORD,

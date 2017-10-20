@@ -14,9 +14,10 @@ const store = container.get<Store<State>>('store');
 
 bootstrap();
 
-function bootstrap() {
+async function bootstrap() {
 
   setRouteFromBrowser();
+  await updateServerState();
 
   ReactDOM.render(
     <Provider store={store}>
@@ -25,13 +26,12 @@ function bootstrap() {
     document.getElementById('react-container'),
   );
 
-  updateServerState();
 }
 
 function setRouteFromBrowser() {
   const routerActions = container.get<RouterActions>(RouterActions);
   const location = new URL(document.location.toString());
-  store.dispatch(routerActions.changeRoute(location.pathname, location.search));
+  store.dispatch(routerActions.setRoute({path: location.pathname, query: location.search}));
 }
 
 async function updateServerState() {
@@ -40,6 +40,6 @@ async function updateServerState() {
   const state = await api.getState();
   if (!state.hasAdmin) {
     console.log('setting route to /createAdmin');
-    store.dispatch(routerActions.changeRoute('/createAdmin'));
+    store.dispatch(routerActions.changeRoute({path: '/createAdmin'}));
   }
 }

@@ -6,16 +6,16 @@ import {routes} from '../routes';
 
 interface RouterParams {
   path: string | null;
-  query: URLSearchParams | null,
+  query: string | null,
   loggedIn: boolean;
 }
 
 export interface Route {
   pattern: RegExp;
-  factory: (matches: RegExpExecArray, query: URLSearchParams) => JSX.Element
+  factory: (matches: RegExpExecArray, query: string) => JSX.Element
 }
 
-function selectView(path: string, query: URLSearchParams) {
+function selectView(path: string, query: string) {
   return routes.reduce((result, {pattern, factory}) => {
     if (result !== null) {
       return result;
@@ -37,7 +37,7 @@ function RouterFn({path, query}: RouterParams): JSX.Element {
 
   const view = selectView(
     path,
-    query === null ? new URLSearchParams() : query,
+    query === null ? '' : query,
   );
 
   if (view === null) {

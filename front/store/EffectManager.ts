@@ -13,6 +13,5 @@ export class EffectManager {
       this.effects.forEach(effect => effect.run(action, api.dispatch, api.getState));
       return next(action);
     };
-
   }
 }

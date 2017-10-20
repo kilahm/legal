@@ -1,5 +1,5 @@
-import {UpdateBrowserHistory} from './UpdateBrowserHistory';
+import {UpdateBrowser} from './UpdateBrowser';
 
 export default [
-  UpdateBrowserHistory,
+  UpdateBrowser,
 ];
