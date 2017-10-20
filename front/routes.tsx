@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {Route} from './router/Router';
+import {CreateAdmin} from './user/CreateAdmin';
 
 export const routes: Route[] = [
   {
@@ -8,6 +9,6 @@ export const routes: Route[] = [
   },
   {
     pattern: /^\/createAdmin$/,
-    factory: () => <h1>Create admin page</h1>,
+    factory: () => <CreateAdmin/>,
   },
 ];

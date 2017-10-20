@@ -1,6 +1,7 @@
 import {inject, injectable} from 'inversify';
 import {Http} from './Http';
 import {ServerState} from './ServerState';
+import {User} from '../user/User';
 
 export class ApiError extends Error {
 }
@@ -17,6 +18,10 @@ interface LoginResponse {
 
 interface ServerStateResponse {
   state: ServerState;
+}
+
+interface CreateUserResponse {
+  user: User;
 }
 
 @injectable()
@@ -44,10 +49,18 @@ export class Client {
 
   async getState(): Promise<ServerState> {
     const response = await this.get<ServerStateResponse>('/api/state');
-    if(!response.ok) {
+    if (!response.ok) {
       throw new ApiError('Unable to get server state');
     }
     return response.body.state;
+  }
+
+  async createUser(user: User, password: string): Promise<CreateUserResponse> {
+    const response = await this.post<CreateUserResponse>('/api/users', {...user, password});
+    if (!response.ok) {
+      throw new ApiError('Unable to create user');
+    }
+    return response.body;
   }
 
   private async post<Tresponse>(

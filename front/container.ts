@@ -3,6 +3,7 @@ import api from './api/provider';
 import login from './login/provider';
 import router from './router/provider';
 import store from './store/provider';
+import user from './user/provider';
 import ServiceIdentifier = interfaces.ServiceIdentifier;
 
 const modules = [
@@ -10,6 +11,7 @@ const modules = [
   login,
   store,
   router,
+  user,
 ];
 
 export const container = new Container();
