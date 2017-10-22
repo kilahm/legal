@@ -7,11 +7,11 @@ export class Actions {
   private static readonly EMAIL_PASSWORD: Symbol = Symbol('with email');
   private static readonly SET_JWT = Symbol('set jwt');
 
-  public setLoginFormErrors(message: string): FieldAction {
+  public static setLoginFormErrors(message: string): FieldAction {
     return actions.setErrors('login.model', message);
   }
 
-  public loginWithEmailAndPassword(email: string, password: string): LoginWithEmailAndPassword {
+  public static loginWithEmailAndPassword(email: string, password: string): LoginWithEmailAndPassword {
     return {
       type: Actions.EMAIL_PASSWORD,
       payload: {email, password},
@@ -22,7 +22,7 @@ export class Actions {
     return action.type === Actions.EMAIL_PASSWORD;
   }
 
-  public setUserJwt(jwt: string): SetUserJwt {
+  public static setUserJwt(jwt: string): SetUserJwt {
     return {
       type: Actions.SET_JWT,
       payload: {jwt},
@@ -31,6 +31,10 @@ export class Actions {
 
   public static isSetUserJwt(action: any): action is SetUserJwt {
     return action.type === Actions.SET_JWT;
+  }
+
+  static setSubmitted(submittedState: boolean): Action {
+    return actions.setSubmitted('login.model', submittedState);
   }
 }
 

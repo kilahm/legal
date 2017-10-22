@@ -9,8 +9,8 @@ import {Effect} from './Effect';
 export default new ContainerModule(bind => {
   bind<Effect[]>('effects').toDynamicValue(context => {
     return EffectClasses.map(effectClass => context.container.get(effectClass));
-  });
-  bind<EffectManager>(EffectManager).toSelf();
+  }).inSingletonScope();
+  bind<EffectManager>(EffectManager).toSelf().inSingletonScope();
   bind<Store<State>>('store').toDynamicValue(context => {
     const em = context.container.get<EffectManager>(EffectManager);
     return createStore(
@@ -21,5 +21,5 @@ export default new ContainerModule(bind => {
         ),
       ),
     );
-  });
+  }).inSingletonScope();
 });

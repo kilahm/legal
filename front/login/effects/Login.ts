@@ -1,15 +1,15 @@
-import {Client} from '../../api/Client';
+import {Client, ErrorResponse, LoginResponse} from '../../api/Client';
 import {injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
 import {Action, Dispatch} from 'redux';
 import {Actions as LoginActions} from '../Actions';
+import {Actions as CoreActions} from '../../core/Actions';
 
 @injectable()
 export class Login implements Effect {
 
   constructor(
     private api: Client,
-    private loginActions: LoginActions,
   ) {
   }
 
@@ -18,11 +18,23 @@ export class Login implements Effect {
       return;
     }
     const {email, password} = action.payload;
-    try {
-      const response = await this.api.login(email, password);
-      dispatch(this.loginActions.setUserJwt(response.jwt));
-    } catch (e) {
-      dispatch(this.loginActions.setLoginFormErrors(e.message));
+    const {body} = await this.api.login(email, password);
+    Login.handleResponse(body, dispatch);
+    dispatch(LoginActions.setSubmitted(true));
+  }
+
+  private static handleResponse(body: LoginResponse | ErrorResponse, dispatch: Dispatch<any>): void {
+    if (Client.isErrorResponse(body)) {
+      dispatch(CoreActions.showError(body.error, body.context));
+      return;
     }
+    if (Client.isLoginResponse(body)) {
+      dispatch(LoginActions.setUserJwt(body.jwt));
+      return;
+    }
+    dispatch(CoreActions.showError(
+      'Unable to log in at this time',
+      'Unexpected response from server: ' + JSON.stringify(body),
+    ));
   }
 }

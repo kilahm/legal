@@ -6,7 +6,7 @@ export class Actions {
   public static readonly CHANGE_ROUTE: Symbol = Symbol('change route');
   private static SET_ROUTE: Symbol = Symbol('set route');
 
-  public setRoute(params: RouteParams): ChangeRoute {
+  public static setRoute(params: RouteParams): ChangeRoute {
     return {
       type: Actions.SET_ROUTE,
       payload: params,
@@ -17,7 +17,7 @@ export class Actions {
     return action.type === Actions.SET_ROUTE;
   }
 
-  public changeRoute(params: RouteParams): ChangeRoute {
+  public static changeRoute(params: RouteParams): ChangeRoute {
     return {
       type: Actions.CHANGE_ROUTE,
       payload: params,

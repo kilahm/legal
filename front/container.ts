@@ -4,6 +4,7 @@ import login from './login/provider';
 import router from './router/provider';
 import store from './store/provider';
 import user from './user/provider';
+import core from './core/provider';
 import ServiceIdentifier = interfaces.ServiceIdentifier;
 
 const modules = [
@@ -12,6 +13,7 @@ const modules = [
   store,
   router,
   user,
+  core,
 ];
 
 export const container = new Container();

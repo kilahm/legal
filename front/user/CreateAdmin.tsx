@@ -4,11 +4,12 @@ import {connect,} from 'react-redux';
 import {State} from '../store/reducer';
 import {CreateAdminModel} from './reducer';
 import {Actions} from './Actions';
-import {Role} from './User';
 import {Dispatch} from 'redux';
+import {Role} from '../api/User';
 
 
 type CreateAdminProps = CreateAdminDispatchProps & CreateAdminStateProps;
+
 function CreateAdminComponent({pending, createAdmin}: CreateAdminProps): JSX.Element {
   return (
     <Form
