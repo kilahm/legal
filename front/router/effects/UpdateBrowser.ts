@@ -23,7 +23,6 @@ export class UpdateBrowser implements Effect {
   }
 
   private pathHasChanged(path: string) {
-    console.log(this.history.state);
     if (this.history.state && this.history.state.path) {
       return path !== this.history.state.path;
     }

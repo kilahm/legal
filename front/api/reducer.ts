@@ -19,5 +19,15 @@ export const reducer: Reducer<State> = (state = defaultState, action) => {
       state: action.payload.state,
     };
   }
+
+  if (Actions.isSetServerState(action)) {
+    return {
+      ...state,
+      state: {
+        ...state.state,
+        ...action.payload.state,
+      },
+    };
+  }
   return state;
 };

@@ -1,5 +1,5 @@
-import {CreateAdmin} from './CreateAdmin';
+import {CreateUser} from './CreateUser';
 
 export default [
-  CreateAdmin,
+  CreateUser,
 ];

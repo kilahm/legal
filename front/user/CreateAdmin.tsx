@@ -83,5 +83,4 @@ const dispatchMap = (dispatch: Dispatch<any>) => {
 export const CreateAdmin = connect<CreateAdminStateProps, CreateAdminDispatchProps, {}>(
   stateMap,
   dispatchMap,
-)(
-  CreateAdminComponent);
+)(CreateAdminComponent);

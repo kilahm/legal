@@ -1,13 +1,21 @@
 import * as React from 'react';
-import {connect} from 'react-redux';
+import {StatelessComponent} from 'react';
+import {connect, MapStateToProps} from 'react-redux';
 import {State} from '../store/reducer';
 import {Landing} from '../landing/Landing';
 import {routes} from '../routes';
+import {Login} from '../login/Login';
+import {CreateAdmin} from '../user/CreateAdmin';
+import {NotFound} from './NotFound';
 
-interface RouterParams {
+interface StateProps {
   path: string | null;
   query: string | null,
   loggedIn: boolean;
+  adminExists: boolean;
+}
+
+interface DispatchProps {
 }
 
 export interface Route {
@@ -15,41 +23,41 @@ export interface Route {
   factory: (matches: RegExpExecArray, query: string) => JSX.Element
 }
 
-function selectView(path: string, query: string) {
-  return routes.reduce((result, {pattern, factory}) => {
-    if (result !== null) {
-      return result;
-    }
-
+function selectView(path: string, query: string): JSX.Element {
+  for (let {pattern, factory} of routes) {
     const matches = pattern.exec(path);
-    if (matches === null) {
-      return null;
+    if (matches !== null) {
+      return factory(matches, query);
     }
-
-    return factory(matches, query);
-  }, null);
+  }
+  return <NotFound/>;
 }
 
-function RouterFn({path, query}: RouterParams): JSX.Element {
+type Props = StateProps & DispatchProps
+const RouterComponent: StatelessComponent<Props> = ({path, query, loggedIn, adminExists}) => {
+  if (!adminExists) {
+    return <CreateAdmin/>;
+  }
+  if (!loggedIn) {
+    return <Login/>;
+  }
+
   if (path === null) {
     return <Landing/>;
   }
 
-  const view = selectView(
+  return selectView(
     path,
     query === null ? '' : query,
   );
+};
 
-  if (view === null) {
-    return <Landing/>;
-  }
-
-  return view;
-}
-
-export const Router = connect((state: State) => {
+const stateMap: MapStateToProps<StateProps, {}> = (state: State) => {
   return {
     path: state.router.path,
     query: state.router.query,
+    loggedIn: state.login.jwt !== '',
+    adminExists: state.api.state.hasAdmin,
   };
-})(RouterFn);
+};
+export const Router = connect<StateProps, DispatchProps, {}>(stateMap)(RouterComponent);

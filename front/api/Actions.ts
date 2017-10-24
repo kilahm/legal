@@ -4,6 +4,7 @@ import {ServerState} from './ServerState';
 export class Actions {
   private static readonly FETCH_SERVER_STATE = Symbol('fetch server state');
   private static readonly SERVER_STATE_FETCHED = Symbol('server state fetched');
+  private static SET_SERVER_STATE = Symbol('set server state');
 
   public static fetchServerState(): FetchServerState {
     return {
@@ -26,6 +27,19 @@ export class Actions {
   public static isServerStateFetched(action: Action): action is ServerStateFetched {
     return action.type === Actions.SERVER_STATE_FETCHED;
   }
+
+  static setServerSate(state: Partial<ServerState>): SetServerState {
+    return {
+      type: Actions.SET_SERVER_STATE,
+      payload: {
+        state,
+      },
+    };
+  }
+
+  public static isSetServerState(action: Action): action is SetServerState {
+    return action.type === Actions.SET_SERVER_STATE;
+  }
 }
 
 interface ServerStateFetched extends Action {
@@ -36,4 +50,10 @@ interface ServerStateFetched extends Action {
 
 interface FetchServerState extends Action {
   payload: {}
+}
+
+interface SetServerState extends Action {
+  payload: {
+    state: Partial<ServerState>
+  }
 }

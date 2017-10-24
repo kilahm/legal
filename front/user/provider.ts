@@ -1,6 +1,6 @@
 import {ContainerModule} from 'inversify';
-import {CreateAdmin} from './effects/CreateAdmin';
+import {CreateUser} from './effects/CreateUser';
 
 export default new ContainerModule(bind => {
-  bind<CreateAdmin>(CreateAdmin).toSelf().inSingletonScope();
+  bind<CreateUser>(CreateUser).toSelf().inSingletonScope();
 });
