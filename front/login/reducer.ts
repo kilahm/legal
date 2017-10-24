@@ -17,7 +17,7 @@ const initialValues: Model = {
   password: '',
 };
 
-export const reducer = combineReducers({
+export const reducer = combineReducers<State>({
   jwt: (jwt = '', action) => Actions.isSetUserJwt(action) ? action.payload.jwt : jwt,
   model: modelReducer('login.model', initialValues),
   form: formReducer('login.model', initialValues),

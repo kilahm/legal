@@ -2,20 +2,23 @@ import {Reducer} from 'redux';
 import {Actions} from './Actions';
 
 export interface State {
-  error: {
+  error: null | {
     message: string,
     context: string,
   };
 }
-export const reducer: Reducer<State> = (state, action) => {
-  if(Actions.isShowError(action)) {
+
+const defaultState = {error: null};
+
+export const reducer: Reducer<State> = (state = defaultState, action) => {
+  if (Actions.isShowError(action)) {
     return {
       ...state,
       error: {
         message: action.payload.error,
         context: action.payload.context,
-      }
-    }
+      },
+    };
   }
- return state;
+  return state;
 };

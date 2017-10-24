@@ -1,4 +1,4 @@
-import {Action} from 'redux';
+import {Reducer} from 'redux';
 import {Actions} from './Actions';
 
 export interface State {
@@ -13,10 +13,10 @@ const initialState: State = {
   title: null,
 };
 
-export function reducer(state: State = initialState, action: Action): State {
+export const reducer: Reducer<State> = (state = initialState, action) => {
   if (Actions.isChangeRoute(action) || Actions.isSetRoute(action)) {
     const {path, query, title} = action.payload;
     return {...state, path, query: query || null, title: title || null};
   }
   return state;
-}
+};

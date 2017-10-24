@@ -12,7 +12,7 @@ const defaultState: State = {
   },
 };
 
-export const reducer: Reducer<State> = (state = defaultState, action): State => {
+export const reducer: Reducer<State> = (state = defaultState, action) => {
   if (Actions.isServerStateFetched(action)) {
     return {
       ...state,

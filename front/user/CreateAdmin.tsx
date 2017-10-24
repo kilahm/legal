@@ -10,7 +10,12 @@ import {Role} from '../api/User';
 
 type CreateAdminProps = CreateAdminDispatchProps & CreateAdminStateProps;
 
-function CreateAdminComponent({pending, createAdmin}: CreateAdminProps): JSX.Element {
+function CreateAdminComponent({pending, createAdmin, adminExists}: CreateAdminProps): JSX.Element {
+  if (adminExists) {
+    return (
+      <h1>Root account already exists</h1>
+    );
+  }
   return (
     <Form
       model={'user.createAdmin.model'}
@@ -41,18 +46,20 @@ function CreateAdminComponent({pending, createAdmin}: CreateAdminProps): JSX.Ele
         disabled={pending}
       />
 
-      <button type="submit" disabled={pending}>Create Admin</button>
+      <button type="submit" disabled={pending}>Create Root</button>
     </Form>
   );
 }
 
 interface CreateAdminStateProps {
   pending: boolean;
+  adminExists: boolean;
 }
 
 const stateMap = (state: State) => {
   return {
     pending: state.user.createAdmin.form.$form.pending,
+    adminExists: state.api.state.hasAdmin,
   };
 };
 

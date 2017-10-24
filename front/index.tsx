@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
 import {Router} from './router/Router';
 import {Actions as CoreActions} from './core/Actions';
+import {Main} from './Main';
 
 
 (
@@ -20,7 +21,9 @@ import {Actions as CoreActions} from './core/Actions';
     const location = new URL(document.location.toString());
     store.dispatch(CoreActions.initializeApp(
       <Provider store={store}>
-        <Router/>
+        <Main>
+          <Router/>
+        </Main>
       </Provider>,
       domRoot,
       {path: location.pathname, query: location.search},
