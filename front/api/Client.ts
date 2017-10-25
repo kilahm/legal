@@ -2,6 +2,7 @@ import {inject, injectable} from 'inversify';
 import {Http} from './Http';
 import {isServerState, ServerState} from './ServerState';
 import {isUser, User} from './User';
+import {State} from '../store/reducer';
 
 export class ApiError extends Error {
 }
@@ -31,7 +32,6 @@ export interface CreateUserResponse {
 
 @injectable()
 export class Client {
-  private jwt: string | null = null;
   private static readonly defaultRequestOptions: Partial<RequestInit> = {
     cache: 'no-store',
     credentials: 'omit',
@@ -41,7 +41,10 @@ export class Client {
     referrerPolicy: 'origin-when-cross-origin',
   };
 
-  constructor(@inject('Http') private http: Http) {
+  constructor(
+    @inject('Http') private http: Http,
+    @inject('getStateFactory') private getStateFactory: () => () => State
+  ) {
   }
 
   static isErrorResponse(subject: any): subject is ErrorResponse {
@@ -114,8 +117,9 @@ export class Client {
 
   private buildHeaders(headers: Headers | undefined): Headers {
     const heads = new Headers(headers);
-    if (this.jwt) {
-      heads.set('Authorization', 'Bearer ' + this.jwt);
+    const jwt = this.getStateFactory()().login.jwt;
+    if (jwt) {
+      heads.set('Authorization', 'Bearer ' + jwt);
     }
     heads.set('Accept', 'application/json');
     heads.set('content-type', 'application/json');

@@ -4,6 +4,7 @@ import {Effect} from '../../store/Effect';
 import {Action, Dispatch} from 'redux';
 import {Actions as LoginActions} from '../Actions';
 import {Actions as CoreActions} from '../../core/Actions';
+import {State} from '../../store/reducer';
 
 @injectable()
 export class Login implements Effect {
@@ -13,7 +14,7 @@ export class Login implements Effect {
   ) {
   }
 
-  async run<S>(action: Action, dispatch: Dispatch<S>): Promise<void> {
+  async run(action: Action, dispatch: Dispatch<State>): Promise<void> {
     if (!LoginActions.isLoginWithEmailAndPassword(action)) {
       return;
     }

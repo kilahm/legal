@@ -2,12 +2,14 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-$networkProc = new \Symfony\Component\Process\Process(<<<SH
+$networkProc = new \Symfony\Component\Process\Process(
+    <<<SH
 docker network create --internal minutes-integration
 SH
 );
 $networkProc->mustRun()->wait();
-$dbProc = new \Symfony\Component\Process\Process(<<<SH
+$dbProc = new \Symfony\Component\Process\Process(
+    <<<SH
 docker run \
   --network=minutes-integration \
   --network-alias=db \

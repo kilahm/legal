@@ -5,7 +5,7 @@ import {Action, Dispatch, Middleware, MiddlewareAPI} from 'redux';
 @injectable()
 export class EffectManager {
 
-  constructor(@inject('effects') private effects: Effect[]) {
+  constructor(@inject('effects') private effects: Effect<any>[]) {
   }
 
   public buildMiddleware(): Middleware {

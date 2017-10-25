@@ -22,4 +22,6 @@ export default new ContainerModule(bind => {
       ),
     );
   }).inSingletonScope();
+  bind<() => () => State>('getStateFactory')
+    .toDynamicValue(context => () => context.container.get<Store<State>>('store').getState);
 });

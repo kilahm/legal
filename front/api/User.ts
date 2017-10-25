@@ -15,10 +15,11 @@ export function isRole(subject: any): subject is Role {
     subject === Role.ADMIN ||
     subject === Role.CHILD;
 }
+
 export function isUser(subject: any): subject is User {
   return typeof subject === 'object' &&
     typeof subject.name === 'string' &&
     typeof subject.email === 'string' &&
     subject.roles instanceof Array &&
-    subject.roles.every(isRole)
+    subject.roles.every(isRole);
 }

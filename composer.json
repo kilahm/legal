@@ -29,7 +29,9 @@
     "psr-4": {
       "Test\\": "test/"
     },
-    "files": ["back/bootstrap.php"]
+    "files": [
+      "back/bootstrap.php"
+    ]
   },
   "scripts": {
     "test": "phpunit",

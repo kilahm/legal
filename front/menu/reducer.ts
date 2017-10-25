@@ -6,7 +6,7 @@ export interface State {
 }
 
 const defaultState: State = {
-  mainNavigation: defaultMainNavigation
+  mainNavigation: defaultMainNavigation,
 };
 
 export const reducer: Reducer<State> = (state = defaultState) => {
