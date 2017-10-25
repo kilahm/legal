@@ -6,6 +6,7 @@ import {actions, FieldAction} from 'react-redux-form';
 export class Actions {
   private static readonly EMAIL_PASSWORD: Symbol = Symbol('with email');
   private static readonly SET_JWT = Symbol('set jwt');
+  private static LOAD_JWT = Symbol('load jwt');
 
   public static setLoginFormErrors(message: string): FieldAction {
     return actions.setErrors('login.model', message);
@@ -29,8 +30,18 @@ export class Actions {
     };
   }
 
-  public static isSetUserJwt(action: any): action is SetUserJwt {
+  public static isSetUserJwt(action: any): action is LoadUserJwt {
     return action.type === Actions.SET_JWT;
+  }
+
+  public static loadUserJwt(): LoadUserJwt {
+    return {
+      type: Actions.LOAD_JWT,
+    };
+  }
+
+  public static isLoadUserJwt(action: any): action is LoadUserJwt {
+    return action.type === Actions.LOAD_JWT;
   }
 
   static setSubmitted(submittedState: boolean): Action {
@@ -49,6 +60,5 @@ export interface SetUserJwt extends Action {
   payload: { jwt: string };
 }
 
-
-
-
+export interface LoadUserJwt extends Action {
+}
