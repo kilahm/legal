@@ -17,6 +17,6 @@ export class PersistJwt implements Effect {
     if (!LoginActions.isSetUserJwt(action)) {
       return;
     }
-    this.localStorage.setItem(PersistJwt.JwtKey.toString(), action.payload.jwt);
+    this.localStorage.setItem(PersistJwt.JwtKey.toString(), action.payload.jwt.raw);
   }
 }

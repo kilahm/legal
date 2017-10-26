@@ -1,6 +1,7 @@
 import {Action} from 'redux';
 import {injectable} from 'inversify';
 import {actions, FieldAction} from 'react-redux-form';
+import {decodeJwt, Jwt} from './Jwt';
 
 @injectable()
 export class Actions {
@@ -23,14 +24,16 @@ export class Actions {
     return action.type === Actions.EMAIL_PASSWORD;
   }
 
-  public static setUserJwt(jwt: string): SetUserJwt {
+  public static setUserJwt(rawJwt: string): SetUserJwt {
     return {
       type: Actions.SET_JWT,
-      payload: {jwt},
+      payload: {
+        jwt: decodeJwt(rawJwt)
+      },
     };
   }
 
-  public static isSetUserJwt(action: any): action is LoadUserJwt {
+  public static isSetUserJwt(action: any): action is SetUserJwt {
     return action.type === Actions.SET_JWT;
   }
 
@@ -57,7 +60,7 @@ export interface LoginWithEmailAndPassword extends Action {
 }
 
 export interface SetUserJwt extends Action {
-  payload: { jwt: string };
+  payload: { jwt: Jwt };
 }
 
 export interface LoadUserJwt extends Action {

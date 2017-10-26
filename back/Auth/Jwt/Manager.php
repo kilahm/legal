@@ -16,6 +16,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class Manager
 {
+    const FIVE_MINUTES_IN_SECONDS = 300;
     /** @var string */
     private $signingKey;
     /** @var Signer */
@@ -40,7 +41,11 @@ class Manager
 
     public function buildTokenFromUser(User $user): string
     {
+        $now = time();
         return $this->builder
+            ->setIssuedAt($now)
+            ->setNotBefore($now)
+            ->setExpiration($now + self::FIVE_MINUTES_IN_SECONDS)
             ->set(
                 'user',
                 [

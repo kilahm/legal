@@ -56,7 +56,7 @@ const stateMap: MapStateToProps<StateProps, {}> = (state: State) => {
   return {
     path: state.router.path,
     query: state.router.query,
-    loggedIn: state.login.jwt !== '',
+    loggedIn: !state.login.jwt.isExpired && state.login.jwt.isValid(),
     adminExists: state.api.state.hasAdmin,
   };
 };

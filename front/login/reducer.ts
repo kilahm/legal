@@ -2,6 +2,7 @@ import {formReducer, modelReducer} from 'react-redux-form';
 import {combineReducers} from 'redux';
 import {FormState} from '../util';
 import {Actions} from './Actions';
+import {Jwt} from './Jwt';
 
 export interface Model {
   email: string;
@@ -9,7 +10,7 @@ export interface Model {
 }
 
 export interface State extends FormState<Model> {
-  readonly jwt: string;
+  jwt: Jwt;
 }
 
 const initialValues: Model = {
