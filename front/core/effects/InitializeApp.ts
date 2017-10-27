@@ -4,7 +4,7 @@ import {Action, Dispatch} from 'redux';
 import {Actions as CoreActions} from '../Actions';
 import {Actions as RouterActions} from '../../router/Actions';
 import {Actions as ApiActions} from '../../api/Actions';
-import {Actions as LoginActions} from '../../login/Actions';
+import {Actions as LoginActions} from '../../auth/Actions';
 import {injectable} from 'inversify';
 import * as ReactDOM from 'react-dom';
 

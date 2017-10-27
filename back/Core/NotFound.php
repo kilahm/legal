@@ -17,7 +17,7 @@ class NotFound extends AbstractHandler
         $path = $request->getUri()->getPath();
 
         // If UA wanted json and the path starts with api, assume it's expecting an api response
-        if (substr($path, 0, 4) === 'api' && strpos($accepts, 'json') !== false) {
+        if (substr($path, 0, 4) === '/api' && strpos($accepts, 'json') !== false) {
             return ResponseFactory::apiError(404, 'This endpoint does not exist');
         }
 

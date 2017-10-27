@@ -13,10 +13,12 @@ export class PersistJwt implements Effect {
   ) {
   }
 
-  async run(action: Action): Promise<void> {
-    if (!LoginActions.isSetUserJwt(action)) {
-      return;
+  run(action: Action): void {
+    if (LoginActions.isSetUserJwt(action)) {
+      this.localStorage.setItem(PersistJwt.JwtKey.toString(), action.payload.jwt.raw);
     }
-    this.localStorage.setItem(PersistJwt.JwtKey.toString(), action.payload.jwt.raw);
+    if (LoginActions.isLogout(action)) {
+      this.localStorage.removeItem(PersistJwt.JwtKey.toString());
+    }
   }
 }

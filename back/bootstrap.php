@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 
+use App\Auth\GetFreshToken;
 use App\Auth\PostLogin;
 use App\Config\GetState;
 use App\Error\Middleware as ErrorMiddleware;
@@ -36,7 +37,7 @@ function set_routes(App $app): App
 
             // These require no auth
             $app->get('/state', GetState::class);
-            $app->post('/login', PostLogin::class);
+            $app->post('/auth', PostLogin::class);
 
             $app->post('/users', \App\User\PostUsers::class)
                 ->add(\App\User\PostUsersAuth::class);
@@ -46,6 +47,7 @@ function set_routes(App $app): App
                 '',
                 function () use ($app) {
                     $app->get('/users', GetUsers::class);
+                    $app->get('/jwt', GetFreshToken::class);
                 }
             )->add(\App\Auth\Middleware\RequireValidUser::class);
 
@@ -56,6 +58,17 @@ function set_routes(App $app): App
                     $app->get('/migrations', GetMigrations::class);
                 }
             )->add(\App\Auth\Middleware\RequireAdmin::class);
+
+            $app->any(
+                '.*',
+                function (\Slim\Http\Request $request) {
+                    return \App\Output\ResponseFactory::apiError(
+                        404,
+                        'Unknown endpoint',
+                        ['path' => $request->getUri()->__toString()]
+                    );
+                }
+            );
         }
     );
 

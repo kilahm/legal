@@ -4,7 +4,7 @@ import {connect, MapStateToProps} from 'react-redux';
 import {State} from '../store/reducer';
 import {Landing} from '../landing/Landing';
 import {routes} from '../routes';
-import {Login} from '../login/Login';
+import {Login} from '../auth/Login';
 import {CreateAdmin} from '../user/CreateAdmin';
 import {NotFound} from './NotFound';
 
@@ -56,7 +56,7 @@ const stateMap: MapStateToProps<StateProps, {}> = (state: State) => {
   return {
     path: state.router.path,
     query: state.router.query,
-    loggedIn: !state.login.jwt.isExpired && state.login.jwt.isValid(),
+    loggedIn: !state.auth.jwt.isExpired && state.auth.jwt.isValid(),
     adminExists: state.api.state.hasAdmin,
   };
 };

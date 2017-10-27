@@ -22,6 +22,10 @@ export interface LoginResponse {
   jwt: string;
 }
 
+export interface TokenRefreshResponse {
+  jwt: string;
+}
+
 export interface ServerStateResponse {
   state: ServerState;
 }
@@ -43,7 +47,7 @@ export class Client {
 
   constructor(
     @inject('Http') private http: Http,
-    @inject('getStateFactory') private getStateFactory: () => () => State
+    @inject('getStateFactory') private getStateFactory: () => () => State,
   ) {
   }
 
@@ -52,7 +56,7 @@ export class Client {
   }
 
   async login(email: string, password: string): Promise<TypedResponse<LoginResponse | ErrorResponse>> {
-    return await this.post<LoginResponse>('/api/login', {email, password});
+    return await this.post<LoginResponse>('/api/auth', {email, password});
   }
 
   static isLoginResponse(subject: any): subject is LoginResponse {
@@ -73,6 +77,14 @@ export class Client {
 
   static isCreateUserResponse(subject: any): subject is CreateUserResponse {
     return typeof subject === 'object' && isUser(subject.user);
+  }
+
+  async refreshToken(): Promise<TypedResponse<TokenRefreshResponse | ErrorResponse>> {
+    return await this.get<TokenRefreshResponse>('/api/jwt');
+  }
+
+  static isRefreshTokenResponse(subject: any): subject is TokenRefreshResponse {
+    return typeof subject === 'object' && typeof subject.jwt === 'string';
   }
 
   private async post<Tresponse>(
@@ -117,7 +129,7 @@ export class Client {
 
   private buildHeaders(headers: Headers | undefined): Headers {
     const heads = new Headers(headers);
-    const jwt = this.getStateFactory()().login.jwt;
+    const jwt = this.getStateFactory()().auth.jwt.raw;
     if (jwt) {
       heads.set('Authorization', 'Bearer ' + jwt);
     }

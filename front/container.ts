@@ -1,6 +1,6 @@
 import {Container, interfaces} from 'inversify';
 import api from './api/provider';
-import login from './login/provider';
+import login from './auth/provider';
 import router from './router/provider';
 import store from './store/provider';
 import user from './user/provider';

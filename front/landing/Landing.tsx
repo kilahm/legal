@@ -1,10 +1,12 @@
 import * as React from 'react';
+import {Title} from '../components/Title';
 
-export function Landing(): JSX.Element {
-  return (
-    <div>
-      <h1 className="text-center">ELM Minutes</h1>
-    </div>
-  );
+interface Props {
 }
+
+export const Landing: React.StatelessComponent<Props> = () => {
+  return (
+    <Title>ELM Minutes</Title>
+  );
+};
 

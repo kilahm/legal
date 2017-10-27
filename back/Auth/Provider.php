@@ -31,6 +31,9 @@ class Provider extends AbstractServiceProvider
 
     public function register()
     {
+        $this->container->share(GetFreshToken::class)
+            ->withArgument('JWT User')
+            ->withArgument(Manager::class);
         $this->container->share(PostLogin::class)
             ->withArgument(Repository::class)
             ->withArgument(Manager::class);

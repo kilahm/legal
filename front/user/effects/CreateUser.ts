@@ -4,7 +4,7 @@ import {Action, Dispatch} from 'redux';
 import {Client} from '../../api/Client';
 import {Actions as UserActions} from '../Actions';
 import {Actions as CoreActions} from '../../core/Actions';
-import {Actions as LoginActions} from '../../login/Actions';
+import {Actions as LoginActions} from '../../auth/Actions';
 import {Actions as ApiActions} from '../../api/Actions';
 import {State} from '../../store/reducer';
 

@@ -2,7 +2,7 @@ import {formReducer, modelReducer} from 'react-redux-form';
 import {combineReducers} from 'redux';
 import {FormState} from '../util';
 import {Actions} from './Actions';
-import {Jwt} from './Jwt';
+import {InvalidJwt, Jwt} from './Jwt';
 
 export interface Model {
   email: string;
@@ -18,9 +18,18 @@ const initialValues: Model = {
   password: '',
 };
 
+const initialJwt = new InvalidJwt('', ['not logged in']);
 export const reducer = combineReducers<State>({
-  jwt: (jwt = '', action) => Actions.isSetUserJwt(action) ? action.payload.jwt : jwt,
-  model: modelReducer('login.model', initialValues),
-  form: formReducer('login.model', initialValues),
+  jwt: (jwt = initialJwt, action) => {
+    if (Actions.isSetUserJwt(action)) {
+      return action.payload.jwt;
+    }
+    if (Actions.isLogout(action)) {
+      return initialJwt;
+    }
+    return jwt
+  },
+  model: modelReducer('auth.model', initialValues),
+  form: formReducer('auth.model', initialValues),
 });
 

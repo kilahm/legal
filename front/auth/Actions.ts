@@ -7,10 +7,11 @@ import {decodeJwt, Jwt} from './Jwt';
 export class Actions {
   private static readonly EMAIL_PASSWORD: Symbol = Symbol('with email');
   private static readonly SET_JWT = Symbol('set jwt');
-  private static LOAD_JWT = Symbol('load jwt');
+  private static readonly LOAD_JWT = Symbol('load jwt');
+  private static readonly LOGOUT = Symbol('log out');
 
   public static setLoginFormErrors(message: string): FieldAction {
-    return actions.setErrors('login.model', message);
+    return actions.setErrors('auth.model', message);
   }
 
   public static loginWithEmailAndPassword(email: string, password: string): LoginWithEmailAndPassword {
@@ -28,12 +29,12 @@ export class Actions {
     return {
       type: Actions.SET_JWT,
       payload: {
-        jwt: decodeJwt(rawJwt)
+        jwt: decodeJwt(rawJwt),
       },
     };
   }
 
-  public static isSetUserJwt(action: any): action is SetUserJwt {
+  public static isSetUserJwt(action: Action): action is SetUserJwt {
     return action.type === Actions.SET_JWT;
   }
 
@@ -43,12 +44,22 @@ export class Actions {
     };
   }
 
-  public static isLoadUserJwt(action: any): action is LoadUserJwt {
+  public static isLoadUserJwt(action: Action): action is LoadUserJwt {
     return action.type === Actions.LOAD_JWT;
   }
 
   static setSubmitted(submittedState: boolean): Action {
-    return actions.setSubmitted('login.model', submittedState);
+    return actions.setSubmitted('auth.model', submittedState);
+  }
+
+  static logout(): Logout {
+    return {
+      type: Actions.LOGOUT,
+    };
+  }
+
+  static isLogout(action: Action): action is Logout {
+    return action.type === Actions.LOGOUT;
   }
 }
 
@@ -64,4 +75,7 @@ export interface SetUserJwt extends Action {
 }
 
 export interface LoadUserJwt extends Action {
+}
+
+export interface Logout extends Action {
 }

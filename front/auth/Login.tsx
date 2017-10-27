@@ -18,7 +18,7 @@ type AllProps = StateProps & DispatchProps;
 const LoginComponent = ({pending, login}: AllProps): JSX.Element => (
   <Form
     className="col-xs-4 col-xs-offset-4"
-    model="login.model"
+    model="auth.model"
     validators={{
       email: {required: v => v && v.length},
       password: {required: v => v && v.length},
@@ -27,7 +27,7 @@ const LoginComponent = ({pending, login}: AllProps): JSX.Element => (
     onSubmit={({email, password}: LoginModel) => login(email, password)}
   >
 
-    <Errors model="login.model"/>
+    <Errors model="auth.model"/>
 
     <Errors
       wrapper={({children}) => (
@@ -76,7 +76,7 @@ const LoginComponent = ({pending, login}: AllProps): JSX.Element => (
 
 const stateMap: MapStateToProps<StateProps, {}> = (state: State): StateProps => {
   return {
-    pending: state.login.form.$form.pending,
+    pending: state.auth.form.$form.pending,
   };
 };
 

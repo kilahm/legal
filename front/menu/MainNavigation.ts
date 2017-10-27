@@ -1,6 +1,7 @@
 import {Dispatch} from 'redux';
 import {State} from '../store/reducer';
 import {Actions as RouterActions} from '../router/Actions';
+import {Actions as AuthActions} from '../auth/Actions';
 
 export interface NavigationMenuItem {
   text: string;
@@ -23,5 +24,9 @@ export const defaultMainNavigation: NavigationMenuItem[] = [
   {
     text: 'Meetings',
     effect: dispatch => dispatch(RouterActions.changeRoute({path: '/meetings'})),
+  },
+  {
+    text: 'Log out',
+    effect: dispatch => dispatch(AuthActions.logout()),
   },
 ];

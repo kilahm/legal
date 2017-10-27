@@ -21,6 +21,7 @@ export interface Jwt {
   readonly errors: string[];
   readonly isExpired: boolean;
   readonly raw: string;
+  readonly secondsUntilExpired: number;
 
   isValid(): this is ValidJwt;
 }
@@ -32,6 +33,7 @@ export class InvalidJwt implements Jwt {
 
   readonly claims = null;
   readonly isExpired = true;
+  readonly secondsUntilExpired = 0;
 
   constructor(readonly raw: string, readonly errors: string[]) {
   }
@@ -49,6 +51,11 @@ export class ValidJwt implements Jwt {
 
   get isExpired(): boolean {
     return this.claims.exp < Math.floor(Date.now() / 1000);
+  }
+
+  get secondsUntilExpired(): number {
+    const expTime = this.claims.exp - Math.floor(Date.now() / 1000);
+    return expTime > 0 ? expTime : 0;
   }
 }
 
