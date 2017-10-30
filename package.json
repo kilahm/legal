@@ -25,6 +25,7 @@
     "@types/react-dom": "^15.5.6",
     "@types/react-redux": "^4.4.45",
     "bootstrap": "^3.3.7",
+    "classnames": "^2.2.5",
     "flux-standard-action": "^1.2.0",
     "inversify": "^4.3.0",
     "inversify-inject-decorators": "^3.0.1",
@@ -38,6 +39,7 @@
     "reflect-metadata": "^0.1.10"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.3",
     "@types/webpack": "^3.0.13",
     "awesome-typescript-loader": "^3.2.3",
     "css-loader": "^0.28.7",

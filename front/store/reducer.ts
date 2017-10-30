@@ -5,6 +5,7 @@ import {reducer as userReducer, State as UserState} from '../user/reducer';
 import {reducer as coreReducer, State as CoreState} from '../core/reducer';
 import {reducer as apiReducer, State as ApiState} from '../api/reducer';
 import {reducer as menuReducer, State as MenuState} from '../menu/reducer';
+import {reducer as meetingsReducer, State as MeetingsState} from '../meetings/reducer';
 
 export interface State {
   auth: LoginState;
@@ -13,6 +14,7 @@ export interface State {
   core: CoreState;
   api: ApiState;
   menu: MenuState;
+  meetings: MeetingsState
 }
 
 export default combineReducers<State>({
@@ -22,4 +24,5 @@ export default combineReducers<State>({
   core: coreReducer,
   api: apiReducer,
   menu: menuReducer,
+  meetings: meetingsReducer,
 });

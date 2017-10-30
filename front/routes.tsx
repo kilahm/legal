@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {Route} from './router/Router';
 import {Landing} from './landing/Landing';
+import {MeetingPage} from './meetings/MeetingPage';
 
 export const routes: Route[] = [
   {
@@ -8,8 +9,10 @@ export const routes: Route[] = [
     factory: () => <Landing/>,
   },
   {
-    pattern: /^\/meetings$/,
-    factory: () => <h1>Meetings page</h1>,
+    pattern: /^\/meetings(\/[^\/]+)?$/,
+    factory: (matches) => <MeetingPage
+      selectedMeetingId={matches[1] ? matches[1].slice(1) : null}
+    />,
   },
   {
     pattern: /^\/projects$/,
