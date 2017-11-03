@@ -5,6 +5,7 @@ import router from './router/provider';
 import store from './store/provider';
 import user from './user/provider';
 import core from './core/provider';
+import meetings from './meetings/provider';
 import ServiceIdentifier = interfaces.ServiceIdentifier;
 
 const modules = [
@@ -14,6 +15,7 @@ const modules = [
   router,
   user,
   core,
+  meetings,
 ];
 
 export const container = new Container();

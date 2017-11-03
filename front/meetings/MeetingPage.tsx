@@ -8,6 +8,8 @@ import {MeetingDetail} from './MeetingDetail';
 import {Title} from '../components/Title';
 import * as classNames from 'classnames';
 import * as styles from './MeetingPage.css';
+import {NewMeeting} from './NewMeeting';
+
 console.log(styles);
 
 interface DispatchProps {
@@ -31,20 +33,26 @@ const Component: React.StatelessComponent<Props> = ({selectedMeetingId, allMeeti
   const renderedMeetings = Object.keys(allMeetings)
     .map(meetingId => (
         <MeetingListEntry
+          key={meetingId}
           data={allMeetings[meetingId]}
           onSelect={() => selectMeeting(meetingId)}
           active={meetingId === allMeetings[meetingId].id}
         />
       ),
     );
+  renderedMeetings.unshift(<NewMeeting key={'newmeeting'}/>);
 
   const view = selectedMeeting
     ? renderSplitView(selectedMeeting, renderedMeetings)
     : renderListOnly(renderedMeetings);
   return (
-    <div className="row">
-      <div className="row"><Title>Meetings</Title></div>
-      {view}
+    <div className="container-fluid">
+      <div className="row">
+        <Title>Meetings</Title>
+      </div>
+      <div className="row">
+        {view}
+      </div>
     </div>
   );
 

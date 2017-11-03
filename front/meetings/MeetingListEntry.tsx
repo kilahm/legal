@@ -18,3 +18,4 @@ export const MeetingListEntry: React.StatelessComponent<Props> = ({data, onSelec
     </div>
   );
 };
+MeetingListEntry.displayName = 'MeetingListEntry';
