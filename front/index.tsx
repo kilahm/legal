@@ -5,10 +5,10 @@ import {Provider} from 'react-redux';
 import {container} from './container';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap/dist/css/bootstrap-theme.css';
+import 'react-datetime/css/react-datetime.css';
 import {Router} from './router/Router';
 import {Actions as CoreActions} from './core/Actions';
 import {Main} from './Main';
-
 
 (
   () => {

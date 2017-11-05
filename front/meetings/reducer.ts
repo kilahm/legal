@@ -1,34 +1,58 @@
-import {Action, combineReducers, Reducer} from 'redux';
+import {Action, Reducer} from 'redux';
 import {Meeting} from '../api/Meeting';
 import {Actions} from './Actions';
-import {formReducer, modelReducer} from 'react-redux-form';
-import {FormState} from '../util';
 
 export interface State {
   all: { [id: string]: Meeting };
-  newMeeting: FormState<NewMeetingModel>;
+  newMeeting: {
+    isOpen: boolean,
+    selectedDate?: Date,
+  };
 }
 
-export interface NewMeetingModel {
-  date: string;
-}
-
-const newMeetingInitialState: NewMeetingModel = {
-  date: '',
+const DefaultState: State = {
+  all: {},
+  newMeeting: {
+    isOpen: false,
+  },
 };
 
-export const reducer: Reducer<State> = combineReducers<State>({
-  all: updateMeetings,
-  newMeeting: combineReducers({
-    form: formReducer('meetings.newMeeting.model', newMeetingInitialState),
-    model: modelReducer('meetings.newMeeting.model', newMeetingInitialState),
-  }),
-});
-
-function updateMeetings(state: { [id: string]: Meeting } = {}, action: Action): { [id: string]: Meeting } {
+export const reducer: Reducer<State> = (state: State = DefaultState, action: Action): State => {
   if (Actions.isAddMeeting(action)) {
     const meeting = action.payload.meeting;
-    return {[meeting.id]: meeting, ...state};
+    return {
+      ...state,
+      all: {
+        ...state.all,
+        [meeting.id]: meeting,
+      },
+    };
+  }
+  if (Actions.isSetNewMeetingCalendarOpenState(action)) {
+    return {
+      ...state,
+      newMeeting: {
+        ...state.newMeeting,
+        isOpen: action.payload.openState,
+      },
+    };
+  }
+  if (Actions.isUpdateDateForNewMeeting(action)) {
+    return {
+      ...state,
+      newMeeting: {
+        ...state.newMeeting,
+        selectedDate: action.payload.date,
+      },
+    };
+  }
+  if (Actions.isResetSelectedDateForNewMeeting(action)) {
+    const newMeetingState = {...state.newMeeting};
+    delete newMeetingState.selectedDate;
+    return {
+      ...state,
+      newMeeting: newMeetingState,
+    };
   }
   return state;
-}
+};

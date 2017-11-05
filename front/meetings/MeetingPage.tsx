@@ -30,6 +30,7 @@ const Component: React.StatelessComponent<Props> = ({selectedMeetingId, allMeeti
   console.log('Rendering meeting page');
   const selectedMeeting = selectedMeetingId ? allMeetings[selectedMeetingId] : null;
 
+  console.log('all meetings', allMeetings);
   const renderedMeetings = Object.keys(allMeetings)
     .map(meetingId => (
         <MeetingListEntry
