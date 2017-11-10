@@ -10,8 +10,6 @@ import * as classNames from 'classnames';
 import * as styles from './MeetingPage.css';
 import {NewMeeting} from './NewMeeting';
 
-console.log(styles);
-
 interface DispatchProps {
   selectMeeting: (id: string) => any;
 }
@@ -27,10 +25,7 @@ interface OwnProps {
 type Props = DispatchProps & StateProps & OwnProps;
 
 const Component: React.StatelessComponent<Props> = ({selectedMeetingId, allMeetings, selectMeeting}) => {
-  console.log('Rendering meeting page');
   const selectedMeeting = selectedMeetingId ? allMeetings[selectedMeetingId] : null;
-
-  console.log('all meetings', allMeetings);
   const renderedMeetings = Object.keys(allMeetings)
     .map(meetingId => (
         <MeetingListEntry

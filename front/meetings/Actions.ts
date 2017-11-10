@@ -19,10 +19,10 @@ export class Actions {
     return action.type === Actions.ADD_MEETING;
   }
 
-  static createMeeting(meeting: Meeting): CreateMeeting {
+  static createMeeting(start: Date): CreateMeeting {
     return {
       type: Actions.CREATE_MEETING,
-      payload: {meeting},
+      payload: {start},
     };
   }
 
@@ -75,7 +75,7 @@ export interface AddMeeting extends Action {
 }
 
 export interface CreateMeeting extends Action {
-  payload: { meeting: Meeting };
+  payload: { start: Date };
 }
 
 export interface SetNewMeetingCalendarOpenState extends Action {

@@ -1,37 +1,22 @@
 import {inject, injectable} from 'inversify';
 import {Http} from './Http';
-import {isServerState, ServerState} from './ServerState';
-import {isUser, User} from './User';
+import {User} from './User';
 import {State} from '../store/reducer';
+import {ErrorResponse} from './responses/ErrorResponse';
+import {CreateUserResponse} from './responses/CreateUserResponse';
+import {LoginResponse} from './responses/LoginResponse';
+import {TokenRefreshResponse} from './responses/TokenRefreshResponse';
+import {ServerStateResponse} from './responses/ServerStateResponse';
+import {CreateMeetingResponse, transformCreateMeetingResponse} from './responses/CreateMeetingResponse';
+import {Meeting} from './Meeting';
 
 export class ApiError extends Error {
-}
-
-export interface ErrorResponse {
-  error: string;
-  context: string;
 }
 
 export interface TypedResponse<ResponseType> {
   status: number;
   body: ResponseType;
   ok: boolean;
-}
-
-export interface LoginResponse {
-  jwt: string;
-}
-
-export interface TokenRefreshResponse {
-  jwt: string;
-}
-
-export interface ServerStateResponse {
-  state: ServerState;
-}
-
-export interface CreateUserResponse {
-  user: User;
 }
 
 @injectable()
@@ -51,40 +36,30 @@ export class Client {
   ) {
   }
 
-  static isErrorResponse(subject: any): subject is ErrorResponse {
-    return typeof subject === 'object' && typeof subject.error === 'string';
-  }
 
   async login(email: string, password: string): Promise<TypedResponse<LoginResponse | ErrorResponse>> {
     return await this.post<LoginResponse>('/api/auth', {email, password});
-  }
-
-  static isLoginResponse(subject: any): subject is LoginResponse {
-    return typeof subject === 'object' && typeof subject.jwt === 'string';
   }
 
   async getState(): Promise<TypedResponse<ServerStateResponse | ErrorResponse>> {
     return await this.get<ServerStateResponse>('/api/state');
   }
 
-  static isServerStateResponse(subject: any): subject is ServerStateResponse {
-    return typeof subject === 'object' && isServerState(subject.state);
-  }
-
   async createUser(user: User, password: string): Promise<TypedResponse<CreateUserResponse | ErrorResponse>> {
     return await this.post<CreateUserResponse>('/api/users', {...user, password});
   }
 
-  static isCreateUserResponse(subject: any): subject is CreateUserResponse {
-    return typeof subject === 'object' && isUser(subject.user);
+  async createMeeting(start: Date): Promise<TypedResponse<Meeting | ErrorResponse>> {
+    console.log(start.valueOf());
+    const payload = {
+      start: Math.floor(start.valueOf() / 1000),
+    };
+    const response = await this.post<CreateMeetingResponse>('/api/meetings', payload);
+    return transformCreateMeetingResponse(response);
   }
 
   async refreshToken(): Promise<TypedResponse<TokenRefreshResponse | ErrorResponse>> {
     return await this.get<TokenRefreshResponse>('/api/jwt');
-  }
-
-  static isRefreshTokenResponse(subject: any): subject is TokenRefreshResponse {
-    return typeof subject === 'object' && typeof subject.jwt === 'string';
   }
 
   private async post<Tresponse>(

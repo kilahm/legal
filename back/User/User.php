@@ -21,12 +21,7 @@ class User
     {
         $this->email = $email;
         $this->name = $name;
-        $this->roles = array_filter(
-            $roles,
-            function ($role): bool {
-                return $role instanceof Role;
-            }
-        );
+        $this->setRoles(...$roles);
         $this->password = $password;
     }
 
@@ -63,5 +58,10 @@ class User
     public function hasRole(Role $role)
     {
         return in_array($role, $this->roles);
+    }
+
+    private function setRoles(Role ...$roles): void
+    {
+        $this->roles = $roles;
     }
 }

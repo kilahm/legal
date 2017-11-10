@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Output;
 
+use App\Meeting\Meeting;
 use App\User\Role;
 use App\User\User;
 
@@ -20,5 +21,26 @@ class Renderer
                 $user->getRoles()
             ),
         ];
+    }
+
+    public static function renderMeeting(Meeting $meeting): array
+    {
+        return [
+            'id' => $meeting->getId()->toString(),
+            'start' => $meeting->getStart()->getTimestamp(),
+        ];
+    }
+
+    public static function renderMeetingList(Meeting ...$meetings)
+    {
+        return array_reduce(
+            $meetings,
+            function (array $json, Meeting $meeting): array {
+                $id = $meeting->getId()->toString();
+                $json[$id] = self::renderMeeting($meeting);
+                return $json;
+            },
+            []
+        );
     }
 }

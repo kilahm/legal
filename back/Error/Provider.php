@@ -9,11 +9,9 @@ use Psr\Log\LoggerInterface;
 class Provider extends AbstractServiceProvider
 {
     protected $provides = [
-        Middleware::class,
     ];
 
     public function register()
     {
-        $this->container->share(Middleware::class)->withArgument(LoggerInterface::class);
     }
 }

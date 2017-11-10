@@ -1,9 +1,7 @@
 import * as React from 'react';
-import {Meeting} from '../api/Meeting';
 import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
 import {Actions} from './Actions';
 import {Moment} from 'moment';
-import {PendingEntityManager} from '../core/PendingEntityManager';
 import * as Datetime from 'react-datetime';
 import {State} from '../store/reducer';
 import moment = require('moment');
@@ -46,11 +44,7 @@ const component: React.StatelessComponent<Props> = ({
           disabled={selectedDate === undefined}
           onClick={() => {
             if (selectedDate !== undefined) {
-              const meeting = {
-                id: PendingEntityManager.getTempId(),
-                date: selectedDate,
-              };
-              createMeeting(meeting);
+              createMeeting(selectedDate);
               clearCalendar();
               closeCalendar();
             }
@@ -72,9 +66,7 @@ const component: React.StatelessComponent<Props> = ({
           onChange={(date) => {
             if (moment.isMoment(date)) {
               updateSelectedDate(date);
-              return;
             }
-            console.log(date);
           }}
           onBlur={clearCalendar}
           input={false}
@@ -85,7 +77,7 @@ const component: React.StatelessComponent<Props> = ({
 };
 
 interface DispatchProps {
-  createMeeting: (meeting: Meeting) => void;
+  createMeeting: (start: Date) => void;
   openCalendar: () => void;
   closeCalendar: () => void;
   updateSelectedDate: (date: Moment) => void;
@@ -94,7 +86,7 @@ interface DispatchProps {
 
 const dispatchMap: MapDispatchToProps<DispatchProps, {}> = dispatch => (
   {
-    createMeeting: (meeting: Meeting) => dispatch(Actions.createMeeting(meeting)),
+    createMeeting: (start: Date) => dispatch(Actions.createMeeting(start)),
     openCalendar: () => dispatch(Actions.setNewMeetingCalendarOpenState(true)),
     closeCalendar: () => dispatch(Actions.setNewMeetingCalendarOpenState(false)),
     updateSelectedDate: (date: Moment) => dispatch(Actions.updateSelectedDateForNewMeeting(date.toDate())),

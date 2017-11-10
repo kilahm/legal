@@ -14,7 +14,7 @@ export const MeetingListEntry: React.StatelessComponent<Props> = ({data, onSelec
   };
   return (
     <div className={classNames('row', classes)} onClick={onSelect}>
-      <span>{data.date.toLocaleDateString()}</span>
+      <span>{data.start.toLocaleDateString()}</span>
     </div>
   );
 };

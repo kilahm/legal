@@ -7,6 +7,8 @@ import {Actions as CoreActions} from '../../core/Actions';
 import {Actions as LoginActions} from '../../auth/Actions';
 import {Actions as ApiActions} from '../../api/Actions';
 import {State} from '../../store/reducer';
+import {isErrorResponse} from '../../api/responses/ErrorResponse';
+import {isCreateUserResponse} from '../../api/responses/CreateUserResponse';
 
 @injectable()
 export class CreateUser implements Effect {
@@ -19,17 +21,16 @@ export class CreateUser implements Effect {
       return;
     }
 
-
     const {user, password} = action.payload;
     const response = await this.api.createUser(user, password);
     const body = response.body;
 
-    if (Client.isErrorResponse(body)) {
+    if (isErrorResponse(body)) {
       dispatch(CoreActions.showError(body.error, body.context));
       return;
     }
 
-    if (Client.isCreateUserResponse(body)) {
+    if (isCreateUserResponse(body)) {
       dispatch(UserActions.userCreated(body.user));
 
       const adminAlreadyExists = getState().api.state.hasAdmin;
@@ -37,10 +38,6 @@ export class CreateUser implements Effect {
         dispatch(LoginActions.loginWithEmailAndPassword(user.email, password));
         dispatch(ApiActions.setServerSate({hasAdmin: true}));
       }
-
-      return;
     }
-
-    dispatch(CoreActions.showError('Unexpected response from server', ''));
   }
 }

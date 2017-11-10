@@ -7,14 +7,14 @@ use App\Util\Enum;
 
 /**
  * @method static Role RESIDENT
+ * @method static Role CONTRIBUTING
  * @method static Role ADMIN
- * @method static Role CHILD
  */
 final class Role
 {
     use Enum;
 
     const RESIDENT = 'resident';
+    const CONTRIBUTING = 'contributing';
     const ADMIN = 'admin';
-    const CHILD = 'child';
 }

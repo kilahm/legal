@@ -9,17 +9,11 @@ use League\Container\ServiceProvider\AbstractServiceProvider;
 class Provider extends AbstractServiceProvider
 {
     protected $provides = [
-        Repository::class,
-        GetUsers::class,
-        PostUsers::class,
         PostUsersAuth::class
     ];
 
     public function register(): void
     {
-        $this->container->share(Repository::class)->withArgument(Db::class);
-        $this->container->share(GetUsers::class)->withArgument(Repository::class);
-        $this->container->share(PostUsers::class)->withArgument(Repository::class);
         $this->container->share(PostUsersAuth::class)
             ->withArgument('JWT User')
             ->withArgument(Repository::class);

@@ -7,6 +7,7 @@ import {Actions as ApiActions} from '../../api/Actions';
 import {Actions as LoginActions} from '../../auth/Actions';
 import {injectable} from 'inversify';
 import * as ReactDOM from 'react-dom';
+import {isErrorResponse} from '../../api/responses/ErrorResponse';
 
 
 @injectable()
@@ -22,7 +23,7 @@ export class InitializeApp implements Effect {
     dispatch(LoginActions.loadUserJwt());
     const {body} = await this.api.getState();
 
-    if (Client.isErrorResponse(body)) {
+    if (isErrorResponse(body)) {
       dispatch(CoreActions.cannotInit(body.error, body.context));
       dispatch(CoreActions.showError('Unable to load app', 'Invalid server state response'));
     } else {

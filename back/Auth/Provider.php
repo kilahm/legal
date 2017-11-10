@@ -5,11 +5,9 @@ namespace App\Auth;
 
 use App\Auth\Jwt\Manager;
 use App\Auth\Middleware\RequireAdmin;
-use App\Auth\Middleware\RequireValidJwt;
+use App\Auth\Middleware\RequireContributingResident;
 use App\Auth\Middleware\RequireValidUser;
 use App\Config\Env;
-use App\Config\GetState;
-use App\User\Repository;
 use Lcobucci\JWT\Signer;
 use Lcobucci\JWT\ValidationData;
 use League\Container\Argument\RawArgument;
@@ -19,23 +17,18 @@ use Psr\Http\Message\ServerRequestInterface;
 class Provider extends AbstractServiceProvider
 {
     protected $provides = [
-        PostLogin::class,
         Signer::class,
         Manager::class,
-        RequireValidJwt::class,
-        GetState::class,
         'JWT User',
         RequireValidUser::class,
         RequireAdmin::class,
+        RequireContributingResident::class,
     ];
 
     public function register()
     {
         $this->container->share(GetFreshToken::class)
             ->withArgument('JWT User')
-            ->withArgument(Manager::class);
-        $this->container->share(PostLogin::class)
-            ->withArgument(Repository::class)
             ->withArgument(Manager::class);
 
         $this->container->share(Signer::class, Signer\Hmac\Sha256::class);
@@ -47,8 +40,6 @@ class Provider extends AbstractServiceProvider
 
         // TODO: probably nothing else to validate here.  I'm really using this as a session token. :(
         $this->container->share(ValidationData::class);
-        $this->container->share(RequireValidJwt::class)
-            ->withArgument(Manager::class);
 
         $this->container->share(
             'JWT User',
@@ -61,12 +52,12 @@ class Provider extends AbstractServiceProvider
             }
         );
 
-        $this->container->share(GetState::class)
-            ->withArgument(Repository::class);
 
         $this->container->share(RequireValidUser::class)
             ->withArgument('JWT User');
         $this->container->share(RequireAdmin::class)
+            ->withArgument('JWT User');
+        $this->container->share(RequireContributingResident::class)
             ->withArgument('JWT User');
     }
 }

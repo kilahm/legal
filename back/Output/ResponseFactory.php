@@ -48,8 +48,13 @@ class ResponseFactory
         );
     }
 
-    public static function notLoggedIn()
+    public static function notLoggedIn(): ResponseInterface
     {
         return self::apiError(403, 'Must be logged in');
+    }
+
+    public static function notAllowed(string $message): ResponseInterface
+    {
+        return self::apiError(403, $message);
     }
 }

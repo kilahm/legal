@@ -1,10 +1,12 @@
-import {Client, ErrorResponse, LoginResponse} from '../../api/Client';
+import {Client} from '../../api/Client';
 import {injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
 import {Action, Dispatch} from 'redux';
 import {Actions as LoginActions} from '../Actions';
 import {Actions as CoreActions} from '../../core/Actions';
 import {State} from '../../store/reducer';
+import {ErrorResponse, isErrorResponse} from '../../api/responses/ErrorResponse';
+import {isLoginResponse, LoginResponse} from '../../api/responses/LoginResponse';
 
 @injectable()
 export class Login implements Effect {
@@ -25,11 +27,11 @@ export class Login implements Effect {
   }
 
   private static handleResponse(body: LoginResponse | ErrorResponse, dispatch: Dispatch<any>): void {
-    if (Client.isErrorResponse(body)) {
+    if (isErrorResponse(body)) {
       dispatch(CoreActions.showError(body.error, body.context));
       return;
     }
-    if (Client.isLoginResponse(body)) {
+    if (isLoginResponse(body)) {
       dispatch(LoginActions.setUserJwt(body.jwt));
       return;
     }

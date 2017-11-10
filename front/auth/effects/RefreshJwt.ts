@@ -4,6 +4,7 @@ import {Action, Dispatch} from 'redux';
 import {Actions} from '../Actions';
 import {injectable} from 'inversify';
 import {Client} from '../../api/Client';
+import {isRefreshTokenResponse} from '../../api/responses/TokenRefreshResponse';
 
 @injectable()
 export class RefreshJwt implements Effect {
@@ -35,7 +36,7 @@ export class RefreshJwt implements Effect {
   private async refreshToken(dispatch: Dispatch<State>): Promise<void> {
     const response = await this.api.refreshToken();
     const {body} = response;
-    if (Client.isRefreshTokenResponse(body)) {
+    if (isRefreshTokenResponse(body)) {
       dispatch(Actions.setUserJwt(body.jwt));
       return;
     }

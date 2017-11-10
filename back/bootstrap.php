@@ -6,14 +6,18 @@ use App\Auth\PostLogin;
 use App\Config\GetState;
 use App\Error\Middleware as ErrorMiddleware;
 use App\Logging\Middleware as LoggingMiddleware;
+use App\Meeting\GetMeetingList;
+use App\Meeting\PostMeetings;
 use App\Persistence\GetMigrations;
 use App\User\GetUsers;
+use App\User\PostUsers;
 use League\Container\Container;
 use Slim\App;
 
 function build_app(?Container $container = null): App
 {
     $container = $container ?: fill_container(new Container());
+    $container->delegate(new \League\Container\ReflectionContainer());
     return set_global_middleware(set_routes(new App($container)));
 }
 
@@ -39,7 +43,7 @@ function set_routes(App $app): App
             $app->get('/state', GetState::class);
             $app->post('/auth', PostLogin::class);
 
-            $app->post('/users', \App\User\PostUsers::class)
+            $app->post('/users', PostUsers::class)
                 ->add(\App\User\PostUsersAuth::class);
 
             // These require valid user
@@ -48,8 +52,17 @@ function set_routes(App $app): App
                 function () use ($app) {
                     $app->get('/users', GetUsers::class);
                     $app->get('/jwt', GetFreshToken::class);
+                    $app->get('/meetings', GetMeetingList::class);
                 }
             )->add(\App\Auth\Middleware\RequireValidUser::class);
+
+            // These require contributing resident
+            $app->group(
+                '',
+                function () use ($app) {
+                    $app->post('/meetings', PostMeetings::class);
+                }
+            )->add(\App\Auth\Middleware\RequireContributingResident::class);
 
             // These require admin
             $app->group(
@@ -60,7 +73,7 @@ function set_routes(App $app): App
             )->add(\App\Auth\Middleware\RequireAdmin::class);
 
             $app->any(
-                '.*',
+                '{.*}',
                 function (\Slim\Http\Request $request) {
                     return \App\Output\ResponseFactory::apiError(
                         404,

@@ -7,13 +7,13 @@ export interface User {
 export enum Role {
   RESIDENT = 'resident',
   ADMIN = 'admin',
-  CHILD = 'child',
+  CONTRIBUTING = 'contributing',
 }
 
 export function isRole(subject: any): subject is Role {
   return subject === Role.RESIDENT ||
     subject === Role.ADMIN ||
-    subject === Role.CHILD;
+    subject === Role.CONTRIBUTING;
 }
 
 export function isUser(subject: any): subject is User {
