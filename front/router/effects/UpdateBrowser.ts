@@ -1,7 +1,8 @@
 import {inject, injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
-import {Action} from 'redux';
+import {Action, Dispatch} from 'redux';
 import {Actions} from '../Actions';
+import {State} from '../../store/reducer';
 
 @injectable()
 export class UpdateBrowser implements Effect {
@@ -10,7 +11,7 @@ export class UpdateBrowser implements Effect {
   ) {
   }
 
-  run(action: Action): void {
+  run(action: Action, dispatch: Dispatch<State>): void {
     if (!Actions.isChangeRoute(action)) {
       return;
     }
@@ -20,6 +21,7 @@ export class UpdateBrowser implements Effect {
     }
     const titleToUse = title === undefined || title === null ? 'ELM Minutes' : title;
     this.history.pushState({path: path}, titleToUse, path);
+    dispatch(Actions.setRoute(action.payload));
   }
 
   private pathHasChanged(path: string) {

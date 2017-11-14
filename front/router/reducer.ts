@@ -14,7 +14,7 @@ const initialState: State = {
 };
 
 export const reducer: Reducer<State> = (state = initialState, action) => {
-  if (Actions.isChangeRoute(action) || Actions.isSetRoute(action)) {
+  if (Actions.isSetRoute(action)) {
     const {path, query, title} = action.payload;
     return {...state, path, query: query || null, title: title || null};
   }

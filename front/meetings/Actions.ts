@@ -7,6 +7,8 @@ export class Actions {
   private static SET_NEW_MEETING_CALENDAR_OPEN = Symbol('set new meeting calendar open state');
   private static UPDATE_DATE_FOR_NEW_MEETING = Symbol('update date in new meeting form');
   private static RESET_SELECTED_DATE_FOR_NEW_MEETING = Symbol('reset date in new meeting');
+  private static SET_MEETINGS = Symbol('set meetings');
+  private static MEETINGS_FETCHED = Symbol('meetings fetched');
 
   static addMeeting(meeting: Meeting): AddMeeting {
     return {
@@ -61,6 +63,27 @@ export class Actions {
   static isResetSelectedDateForNewMeeting(action: Action): action is ResetSelectedDateForNewMeeting {
     return action.type === Actions.RESET_SELECTED_DATE_FOR_NEW_MEETING;
   }
+
+  static setMeetings(meetings: { [key: string]: Meeting }): SetMeetings {
+    return {
+      type: Actions.SET_MEETINGS,
+      payload: {meetings},
+    };
+  }
+
+  static isSetMeetings(action: Action): action is SetMeetings {
+    return action.type === Actions.SET_MEETINGS;
+  }
+
+  static meetingsFetched(): MeetingsFetched {
+    return {
+      type: Actions.MEETINGS_FETCHED,
+    };
+  }
+
+  static isMeetingsFetched(action: Action): action is MeetingsFetched {
+    return action.type === Actions.MEETINGS_FETCHED;
+  }
 }
 
 interface ResetSelectedDateForNewMeeting extends Action {
@@ -80,4 +103,11 @@ export interface CreateMeeting extends Action {
 
 export interface SetNewMeetingCalendarOpenState extends Action {
   payload: { openState: boolean };
+}
+
+export interface SetMeetings extends Action {
+  payload: { meetings: { [key: string]: Meeting } };
+}
+
+export interface MeetingsFetched extends Action {
 }

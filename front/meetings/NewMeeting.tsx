@@ -24,7 +24,7 @@ const component: React.StatelessComponent<Props> = ({
   function renderCreateButton() {
     return (
       <div>
-        <label htmlFor='new-meeting'>New Meeting</label>
+        <label htmlFor='new-meeting' className="sr-only">New Meeting</label>
         <button
           id='new-meeting'
           onClick={openCalendar}

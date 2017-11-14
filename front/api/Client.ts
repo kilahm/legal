@@ -9,6 +9,7 @@ import {TokenRefreshResponse} from './responses/TokenRefreshResponse';
 import {ServerStateResponse} from './responses/ServerStateResponse';
 import {CreateMeetingResponse, transformCreateMeetingResponse} from './responses/CreateMeetingResponse';
 import {Meeting} from './Meeting';
+import {transformGetMeetingsResponse} from './responses/GetMeetingsResponse';
 
 export class ApiError extends Error {
 }
@@ -50,12 +51,15 @@ export class Client {
   }
 
   async createMeeting(start: Date): Promise<TypedResponse<Meeting | ErrorResponse>> {
-    console.log(start.valueOf());
     const payload = {
       start: Math.floor(start.valueOf() / 1000),
     };
     const response = await this.post<CreateMeetingResponse>('/api/meetings', payload);
     return transformCreateMeetingResponse(response);
+  }
+
+  async getMeetings(): Promise<TypedResponse<{ [key: string]: Meeting } | ErrorResponse>> {
+    return transformGetMeetingsResponse(await this.get('/api/meetings'));
   }
 
   async refreshToken(): Promise<TypedResponse<TokenRefreshResponse | ErrorResponse>> {

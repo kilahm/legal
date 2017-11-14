@@ -1,3 +1,7 @@
-- [ ] Create provider for JWT token
-- [ ] Implement auth middleware by providing JWT `ValidationData`
-- [ ] Implement create root account endpoint/view
+- [x] Create provider for JWT token
+- [x] Implement auth middleware by providing JWT `ValidationData`
+- [x] Implement create root account endpoint/view
+- [ ] Meeting list refresh button
+- [ ] Visualize meeting list as cards
+- [ ] Meeting stats: action items todo and done
+- [ ] Action item with a many to many relationship to meetings

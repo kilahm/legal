@@ -8,6 +8,7 @@ export interface State {
     isOpen: boolean,
     selectedDate?: Date,
   };
+  needsData: boolean,
 }
 
 const DefaultState: State = {
@@ -15,6 +16,7 @@ const DefaultState: State = {
   newMeeting: {
     isOpen: false,
   },
+  needsData: true,
 };
 
 export const reducer: Reducer<State> = (state: State = DefaultState, action: Action): State => {
@@ -52,6 +54,12 @@ export const reducer: Reducer<State> = (state: State = DefaultState, action: Act
     return {
       ...state,
       newMeeting: newMeetingState,
+    };
+  }
+  if (Actions.isSetMeetings(action)) {
+    return {
+      ...state,
+      all: action.payload.meetings,
     };
   }
   return state;

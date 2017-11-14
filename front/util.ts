@@ -14,3 +14,10 @@ export interface FormState<Tmodel extends Object> {
     [K in keyof Tmodel]: FieldState
     };
 }
+
+export function isMapOf<T>(data: any, elementChecker: (element: any) => element is T): data is { [key: string]: T } {
+  if (typeof data !== 'object') {
+    return false;
+  }
+  return Object.keys(data).every(key => elementChecker(data[key]));
+}
