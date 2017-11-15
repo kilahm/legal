@@ -21,3 +21,13 @@ export function isMapOf<T>(data: any, elementChecker: (element: any) => element 
   }
   return Object.keys(data).every(key => elementChecker(data[key]));
 }
+
+export enum BootstrapType {
+  primary = 'primary',
+  success = 'success',
+  info = 'info',
+  warning = 'warning',
+  danger = 'danger',
+  link = 'link',
+}
+

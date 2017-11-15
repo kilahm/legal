@@ -4,7 +4,9 @@ import {Actions} from './Actions';
 import {Moment} from 'moment';
 import * as Datetime from 'react-datetime';
 import {State} from '../store/reducer';
+import {IconButton} from '../components/IconButton';
 import moment = require('moment');
+import classNames = require('classnames');
 
 type Props = DispatchProps & StateProps;
 const component: React.StatelessComponent<Props> = ({
@@ -16,61 +18,61 @@ const component: React.StatelessComponent<Props> = ({
   updateSelectedDate,
   clearCalendar,
 }) => {
-  if (calendarIsOpen) {
-    return renderCalendar();
-  }
-  return renderCreateButton();
-
-  function renderCreateButton() {
-    return (
-      <div>
-        <label htmlFor='new-meeting' className="sr-only">New Meeting</label>
-        <button
-          id='new-meeting'
-          onClick={openCalendar}
-        >
-          <i className="glyphicon-plus"/>
-        </button>
-      </div>
-    );
-  }
+  const calendar = calendarIsOpen ? renderCalendar() : null;
+  return [
+    <IconButton
+      key={'button'}
+      id="new-meeting"
+      onClick={openCalendar}
+      iconName={'plus'}
+      label={'New Meeting'}
+    />,
+    calendar,
+  ];
 
   function renderCalendar() {
     return (
-      <div>
-        <button
-          className="btn btn-primary"
-          style={{marginRight: '10px'}}
-          disabled={selectedDate === undefined}
-          onClick={() => {
-            if (selectedDate !== undefined) {
-              createMeeting(selectedDate);
-              clearCalendar();
+      <div
+        key={'calendar'}
+        className={classNames('popover', 'left')}
+        style={{display: 'block', top: -10, left: -276}}
+      >
+        <div className={'arrow'} style={{top: 25}}/>
+        <div className={'popover-content'}>
+          <button
+            className="btn btn-primary"
+            style={{marginRight: '10px'}}
+            disabled={selectedDate === undefined}
+            onClick={() => {
+              if (selectedDate !== undefined) {
+                createMeeting(selectedDate);
+                clearCalendar();
+                closeCalendar();
+              }
+            }}
+          >
+            OK
+          </button>
+          <button
+            className="btn btn-default"
+            onClick={() => {
               closeCalendar();
-            }
-          }}
-        >
-          OK
-        </button>
-        <button
-          className="btn btn-default"
-          onClick={() => {
-            closeCalendar();
-            clearCalendar();
-          }}
-        >
-          Cancel
-        </button>
-        <Datetime
-          value={selectedDate}
-          onChange={(date) => {
-            if (moment.isMoment(date)) {
-              updateSelectedDate(date);
-            }
-          }}
-          onBlur={clearCalendar}
-          input={false}
-        />
+              clearCalendar();
+            }}
+          >
+            Cancel
+          </button>
+          <Datetime
+            value={selectedDate}
+            onChange={(date) => {
+              if (moment.isMoment(date)) {
+                updateSelectedDate(date);
+              }
+            }}
+            onBlur={clearCalendar}
+            input={false}
+          />
+        </div>
       </div>
     );
   }

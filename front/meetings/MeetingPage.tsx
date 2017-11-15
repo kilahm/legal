@@ -1,22 +1,12 @@
 import * as React from 'react';
 import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
 import {Meeting} from '../api/Meeting';
-import {Actions as RouterActions} from '../router/Actions';
 import {State} from '../store/reducer';
-import {MeetingListEntry} from './MeetingListEntry';
 import {MeetingDetail} from './MeetingDetail';
 import {Title} from '../components/Title';
 import * as classNames from 'classnames';
 import * as styles from './MeetingPage.css';
-import {NewMeeting} from './NewMeeting';
-
-interface DispatchProps {
-  selectMeeting: (id: string) => any;
-}
-
-interface StateProps {
-  allMeetings: { [id: string]: Meeting };
-}
+import {MeetingList} from './MeetingList';
 
 interface OwnProps {
   selectedMeetingId: string | null;
@@ -24,23 +14,12 @@ interface OwnProps {
 
 type Props = DispatchProps & StateProps & OwnProps;
 
-const Component: React.StatelessComponent<Props> = ({selectedMeetingId, allMeetings, selectMeeting}) => {
+const component: React.StatelessComponent<Props> = ({selectedMeetingId, allMeetings}) => {
   const selectedMeeting = selectedMeetingId ? allMeetings[selectedMeetingId] : null;
-  const renderedMeetings = Object.keys(allMeetings)
-    .map(meetingId => (
-        <MeetingListEntry
-          key={meetingId}
-          data={allMeetings[meetingId]}
-          onSelect={() => selectMeeting(meetingId)}
-          active={meetingId === allMeetings[meetingId].id}
-        />
-      ),
-    );
-  renderedMeetings.unshift(<NewMeeting key={'newmeeting'}/>);
 
   const view = selectedMeeting
-    ? renderSplitView(selectedMeeting, renderedMeetings)
-    : renderListOnly(renderedMeetings);
+    ? renderSplitView(selectedMeeting)
+    : renderListOnly();
   return (
     <div className="container-fluid">
       <div className="row">
@@ -54,38 +33,42 @@ const Component: React.StatelessComponent<Props> = ({selectedMeetingId, allMeeti
 
 };
 
-function renderSplitView(selectedMeeting: Meeting, listEntries: JSX.Element[]): JSX.Element[] {
+function renderSplitView(selectedMeeting: Meeting): JSX.Element[] {
   return [
     (
-      <div className="col-md-8 col-xs-12">
+      <div key="1" className="col-md-8 col-xs-12">
         <MeetingDetail meeting={selectedMeeting}/>
       </div>
     ),
     (
-      <div className="col-md-4 col-xs-12">
-        {listEntries}
+      <div key="2" className="col-md-4 col-xs-12">
+        <MeetingList selectedMeetingId={selectedMeeting.id}/>
       </div>
     ),
   ];
 }
 
-function renderListOnly(listEntries: JSX.Element[]): JSX.Element {
+function renderListOnly(): JSX.Element {
   return (
     <div className={classNames('col-xs-12', styles.meetingList)}>
-      {listEntries}
+      <MeetingList/>
     </div>
   );
 }
 
-const dispatchMap: MapDispatchToProps<DispatchProps, OwnProps> = dispatch => {
-  return {
-    selectMeeting: (id: string) => dispatch(RouterActions.changeRoute({path: '/meetings/' + id})),
-  };
-};
+interface DispatchProps {
+}
+const dispatchMap: MapDispatchToProps<DispatchProps, OwnProps> = () => (
+  {}
+);
+
+interface StateProps {
+  allMeetings: { [id: string]: Meeting };
+}
 const stateMap: MapStateToProps<StateProps, OwnProps> = (state: State) => (
   {
     allMeetings: state.meetings.all,
   }
 );
-export const MeetingPage = connect<StateProps, DispatchProps, OwnProps>(stateMap, dispatchMap)(Component);
+export const MeetingPage = connect<StateProps, DispatchProps, OwnProps>(stateMap, dispatchMap)(component);
 MeetingPage.displayName = 'MeetingPage';

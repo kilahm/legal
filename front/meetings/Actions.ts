@@ -9,6 +9,7 @@ export class Actions {
   private static RESET_SELECTED_DATE_FOR_NEW_MEETING = Symbol('reset date in new meeting');
   private static SET_MEETINGS = Symbol('set meetings');
   private static MEETINGS_FETCHED = Symbol('meetings fetched');
+  private static FETCH_MEETINGS = Symbol('fetch meetings');
 
   static addMeeting(meeting: Meeting): AddMeeting {
     return {
@@ -55,9 +56,7 @@ export class Actions {
   }
 
   static resetSelectedDateForNewMeeting(): ResetSelectedDateForNewMeeting {
-    return {
-      type: Actions.RESET_SELECTED_DATE_FOR_NEW_MEETING,
-    };
+    return {type: Actions.RESET_SELECTED_DATE_FOR_NEW_MEETING};
   }
 
   static isResetSelectedDateForNewMeeting(action: Action): action is ResetSelectedDateForNewMeeting {
@@ -76,13 +75,19 @@ export class Actions {
   }
 
   static meetingsFetched(): MeetingsFetched {
-    return {
-      type: Actions.MEETINGS_FETCHED,
-    };
+    return {type: Actions.MEETINGS_FETCHED};
   }
 
   static isMeetingsFetched(action: Action): action is MeetingsFetched {
     return action.type === Actions.MEETINGS_FETCHED;
+  }
+
+  static fetchMeetings(): FetchMeetings {
+    return {type: Actions.FETCH_MEETINGS};
+  }
+
+  static isFetchMeetings(action: Action): action is FetchMeetings {
+    return action.type === Actions.FETCH_MEETINGS;
   }
 }
 
@@ -110,4 +115,7 @@ export interface SetMeetings extends Action {
 }
 
 export interface MeetingsFetched extends Action {
+}
+
+export interface FetchMeetings extends Action {
 }

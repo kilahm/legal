@@ -8,7 +8,7 @@ export interface State {
     isOpen: boolean,
     selectedDate?: Date,
   };
-  needsData: boolean,
+  needsData: boolean;
 }
 
 const DefaultState: State = {
@@ -48,18 +48,24 @@ export const reducer: Reducer<State> = (state: State = DefaultState, action: Act
       },
     };
   }
+  if (Actions.isSetMeetings(action)) {
+    return {
+      ...state,
+      all: action.payload.meetings,
+    };
+  }
+  if (Actions.isMeetingsFetched(action)) {
+    return {
+      ...state,
+      needsData: false,
+    };
+  }
   if (Actions.isResetSelectedDateForNewMeeting(action)) {
     const newMeetingState = {...state.newMeeting};
     delete newMeetingState.selectedDate;
     return {
       ...state,
       newMeeting: newMeetingState,
-    };
-  }
-  if (Actions.isSetMeetings(action)) {
-    return {
-      ...state,
-      all: action.payload.meetings,
     };
   }
   return state;

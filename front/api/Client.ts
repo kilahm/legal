@@ -106,7 +106,7 @@ export class Client {
     };
   }
 
-  private buildHeaders(headers: Headers | undefined): Headers {
+  private buildHeaders(headers: Headers | string[][] | undefined): Headers {
     const heads = new Headers(headers);
     const jwt = this.getStateFactory()().auth.jwt.raw;
     if (jwt) {

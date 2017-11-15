@@ -15,18 +15,25 @@ export class FetchMeetings implements Effect {
   }
 
   async run(action: Action, dispatch: Dispatch<State>, getState: () => State): Promise<void> {
-    if (!RouterActions.isSetRoute(action)) {
+    if (!FetchMeetings.handleAction(action, getState())) {
       return;
     }
-    const state = getState();
-    if (action.payload.path.match(/meetings/) && state.meetings.needsData) {
-      const {body} = await this.api.getMeetings();
-      if (isErrorResponse(body)) {
-        dispatch(CoreActions.showError(body.error, body.context));
-        return;
-      }
-      dispatch(MeetingsActions.setMeetings(body));
-      dispatch(MeetingsActions.meetingsFetched());
+    const {body} = await this.api.getMeetings();
+    if (isErrorResponse(body)) {
+      dispatch(CoreActions.showError(body.error, body.context));
+      return;
     }
+    dispatch(MeetingsActions.setMeetings(body));
+    dispatch(MeetingsActions.meetingsFetched());
+  }
+
+  private static handleAction(action: Action, state: State): boolean {
+    if (RouterActions.isSetRoute(action)) {
+      return action.payload.path.match(/meetings/) !== null && state.meetings.needsData;
+    }
+    if (MeetingsActions.isFetchMeetings(action)) {
+      return true;
+    }
+    return false;
   }
 }

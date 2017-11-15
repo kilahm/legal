@@ -1,5 +1,4 @@
 export class FakeHistory implements History {
-  private _scrollRestoration: ScrollRestoration;
 
   get length(): number {
     return 0;
@@ -10,7 +9,7 @@ export class FakeHistory implements History {
   };
 
   set scrollRestoration(value: ScrollRestoration) {
-    this._scrollRestoration = value;
+    value;
   }
 
   back(): void {
