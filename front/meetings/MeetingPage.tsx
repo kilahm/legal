@@ -1,12 +1,12 @@
 import * as React from 'react';
-import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
 import {Meeting} from '../api/Meeting';
-import {State} from '../store/reducer';
+import {State} from '../reducer';
 import {MeetingDetail} from './MeetingDetail';
 import {Title} from '../components/Title';
 import * as classNames from 'classnames';
 import * as styles from './MeetingPage.css';
 import {MeetingList} from './MeetingList';
+import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 
 interface OwnProps {
   selectedMeetingId: string | null;

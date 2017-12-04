@@ -11,3 +11,5 @@ export const Main: React.StatelessComponent = ({children}): JSX.Element => {
     </div>
   );
 };
+
+Main.displayName = 'Main';

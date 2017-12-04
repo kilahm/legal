@@ -1,88 +1,58 @@
 import * as React from 'react';
-import {Control, Errors, Form} from 'react-redux-form';
-import {Model as LoginModel} from './reducer';
-import {State} from '../store/reducer';
-import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
-import {Actions} from './Actions';
+import {StatelessComponent} from 'react';
+import {LoginWithEmailAndPassword} from './Actions';
+import {Input} from '../form/Input';
+import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
+import {LoginForm} from './reducer';
+import {Form} from '../form/Form';
 
 interface StateProps {
-  pending: boolean;
 }
 
 interface DispatchProps {
   login: (email: string, password: string) => void;
 }
 
-type AllProps = StateProps & DispatchProps;
+type Props = StateProps & DispatchProps;
 
-const LoginComponent = ({pending, login}: AllProps): JSX.Element => (
+const LoginComponent: StatelessComponent<Props> = ({login}: Props) => (
   <Form
     className="col-xs-4 col-xs-offset-4"
-    model="auth.model"
-    validators={{
-      email: {required: v => v && v.length},
-      password: {required: v => v && v.length},
-    }}
-    validateOn='submit'
-    onSubmit={({email, password}: LoginModel) => login(email, password)}
+    modelPrefix={'auth.loginForm'}
+    submit={data => login(data['email'], data['password'])}
   >
-
-    <Errors model="auth.model"/>
-
-    <Errors
-      wrapper={({children}) => (
-        <div>{children}</div>
-      )}
-      model=".email"
-      show={{touched: true}}
-      messages={{
-        required: 'Please include your email',
-      }}
-    />
     <label htmlFor="login-email">
       Email
     </label>
-    <Control.input
+    <Input
       type="email"
       id="login-email"
-      model=".email"
+      model="email"
+      formId={LoginForm}
       className="form-control"
-      disabled={pending}
     />
 
-    <Errors
-      wrapper={({children}) => (
-        <div>{children}</div>
-      )}
-      model=".password"
-      show={{touched: true}}
-      messages={{
-        required: 'Please include your password',
-      }}
-    />
     <label htmlFor="login-password">
       Password
     </label>
-    <Control.text
+    <Input
       id="login-password"
-      model=".password"
+      formId={LoginForm}
+      model="password"
       type="password"
       className="form-control"
-      disabled={pending}
     />
-    <button className="btn btn-primary" type="submit" disabled={pending}>Log In</button>
+    <button className="btn btn-primary" type="submit">Log In</button>
   </Form>
 );
 
-const stateMap: MapStateToProps<StateProps, {}> = (state: State): StateProps => {
-  return {
-    pending: state.auth.form.$form.pending,
-  };
+const stateMap: MapStateToProps<{}, {}> = (): StateProps => {
+  return {};
 };
 
 const dispatchMap: MapDispatchToProps<DispatchProps, {}> = dispatch => {
   return {
-    login: (email, password) => dispatch(Actions.loginWithEmailAndPassword(email, password)),
+    login: (email, password) => dispatch(new LoginWithEmailAndPassword({email, password})),
   };
 };
 

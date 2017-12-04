@@ -1,35 +1,36 @@
-import {formReducer, modelReducer} from 'react-redux-form';
-import {combineReducers} from 'redux';
-import {FormState} from '../util';
-import {Actions} from './Actions';
+import {Logout, SetUserJwt} from './Actions';
 import {InvalidJwt, Jwt} from './Jwt';
+import {combineReducers} from '../store/combineReducers';
+import {createFormReducer} from '../form/createFormReducer';
 
-export interface Model {
-  email: string;
-  password: string;
-}
-
-export interface State extends FormState<Model> {
+export interface State {
   jwt: Jwt;
+  loginForm: LoginFormModel;
 }
 
-const initialValues: Model = {
+export interface LoginFormModel {
+  email: string,
+  password: string,
+}
+
+export const LoginForm = Symbol('login form');
+
+const initialFromModel: LoginFormModel = {
   email: '',
   password: '',
 };
 
 const initialJwt = new InvalidJwt('', ['not logged in']);
 export const reducer = combineReducers<State>({
-  jwt: (jwt = initialJwt, action) => {
-    if (Actions.isSetUserJwt(action)) {
+  jwt: (action, jwt = initialJwt) => {
+    if (action instanceof SetUserJwt) {
       return action.payload.jwt;
     }
-    if (Actions.isLogout(action)) {
+    if (action instanceof Logout) {
       return initialJwt;
     }
-    return jwt
+    return jwt;
   },
-  model: modelReducer('auth.model', initialValues),
-  form: formReducer('auth.model', initialValues),
+  loginForm: createFormReducer<LoginFormModel>(LoginForm, initialFromModel),
 });
 

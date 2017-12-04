@@ -1,15 +1,22 @@
 import * as React from 'react';
-import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
-import {Actions} from './Actions';
+import {SFC} from 'react';
 import {Moment} from 'moment';
 import * as Datetime from 'react-datetime';
-import {State} from '../store/reducer';
+import {State} from '../reducer';
 import {IconButton} from '../components/IconButton';
+import {
+  CreateMeeting,
+  ResetSelectedDateForNewMeeting,
+  SetNewMeetingCalendarOpenState,
+  UpdateDateForNewMeeting,
+} from './Actions';
+import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 import moment = require('moment');
 import classNames = require('classnames');
 
 type Props = DispatchProps & StateProps;
-const component: React.StatelessComponent<Props> = ({
+
+const component: SFC<Props> = ({
   selectedDate,
   createMeeting,
   openCalendar,
@@ -19,23 +26,25 @@ const component: React.StatelessComponent<Props> = ({
   clearCalendar,
 }) => {
   const calendar = calendarIsOpen ? renderCalendar() : null;
-  return [
-    <IconButton
-      key={'button'}
-      id="new-meeting"
-      onClick={openCalendar}
-      iconName={'plus'}
-      label={'New Meeting'}
-    />,
-    calendar,
-  ];
+  return (
+    <div>
+      <IconButton
+        key={'button'}
+        id="new-meeting"
+        onClick={openCalendar}
+        iconName={'plus'}
+        label={'New Meeting'}
+      />
+      {calendar}
+    </div>
+  );
 
   function renderCalendar() {
     return (
       <div
         key={'calendar'}
-        className={classNames('popover', 'left')}
-        style={{display: 'block', top: -10, left: -276}}
+        className={classNames('popover', 'right')}
+        style={{display: 'block', top: -10, left: 276}}
       >
         <div className={'arrow'} style={{top: 25}}/>
         <div className={'popover-content'}>
@@ -88,11 +97,11 @@ interface DispatchProps {
 
 const dispatchMap: MapDispatchToProps<DispatchProps, {}> = dispatch => (
   {
-    createMeeting: (start: Date) => dispatch(Actions.createMeeting(start)),
-    openCalendar: () => dispatch(Actions.setNewMeetingCalendarOpenState(true)),
-    closeCalendar: () => dispatch(Actions.setNewMeetingCalendarOpenState(false)),
-    updateSelectedDate: (date: Moment) => dispatch(Actions.updateSelectedDateForNewMeeting(date.toDate())),
-    clearCalendar: () => dispatch(Actions.resetSelectedDateForNewMeeting()),
+    createMeeting: (start: Date) => dispatch(new CreateMeeting({start})),
+    openCalendar: () => dispatch(new SetNewMeetingCalendarOpenState({openState: true})),
+    closeCalendar: () => dispatch(new SetNewMeetingCalendarOpenState({openState: false})),
+    updateSelectedDate: (date: Moment) => dispatch(new UpdateDateForNewMeeting({date: date.toDate()})),
+    clearCalendar: () => dispatch(new ResetSelectedDateForNewMeeting()),
   }
 );
 

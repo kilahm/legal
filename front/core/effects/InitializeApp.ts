@@ -1,13 +1,16 @@
 import {Effect} from '../../store/Effect';
 import {Client} from '../../api/Client';
-import {Action, Dispatch} from 'redux';
-import {Actions as CoreActions} from '../Actions';
-import {Actions as RouterActions} from '../../router/Actions';
-import {Actions as ApiActions} from '../../api/Actions';
-import {Actions as LoginActions} from '../../auth/Actions';
+import {LoadUserJwt} from '../../auth/Actions';
 import {injectable} from 'inversify';
 import * as ReactDOM from 'react-dom';
 import {isErrorResponse} from '../../api/responses/ErrorResponse';
+import {CannotInit} from '../CannotInit';
+import {ShowError} from '../ShowError';
+import {SetRoute} from '../../router/SetRoute';
+import {InitializeApp as InitAction} from '../InitializeApp';
+import {Dispatch} from '../../store/Dispatch';
+import {Action} from '../../store/Action';
+import {ServerStateFetched} from '../../api/Actions';
 
 
 @injectable()
@@ -15,23 +18,27 @@ export class InitializeApp implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(action: Action, dispatch: Dispatch<any>): Promise<void> {
-    if (!CoreActions.isInitializeApp(action)) {
+  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+    if (!(
+        action instanceof InitAction
+      )) {
       return;
     }
 
-    dispatch(LoginActions.loadUserJwt());
+    const promises: Array<Promise<any>> = [];
+    promises.push(dispatch(new LoadUserJwt()));
     const {body} = await this.api.getState();
 
     if (isErrorResponse(body)) {
-      dispatch(CoreActions.cannotInit(body.error, body.context));
-      dispatch(CoreActions.showError('Unable to load app', 'Invalid server state response'));
+      promises.push(dispatch(new CannotInit({reason: body.error, context: body.context})));
+      promises.push(dispatch(new ShowError({error: 'Unable to load app', context: 'Invalid server state response'})));
     } else {
-      dispatch(ApiActions.serverStateFetched(body.state));
+      promises.push(dispatch(new ServerStateFetched({state: body.state})));
     }
 
 
-    dispatch(RouterActions.setRoute(action.payload.browserRoute));
+    promises.push(dispatch(new SetRoute(action.payload.browserRoute)));
+    await Promise.all(promises);
     ReactDOM.render(action.payload.rootElement, action.payload.domRoot);
   }
 }

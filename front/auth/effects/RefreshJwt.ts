@@ -1,28 +1,35 @@
 import {Effect} from '../../store/Effect';
-import {State} from '../../store/reducer';
-import {Action, Dispatch} from 'redux';
-import {Actions} from '../Actions';
+import {State} from '../../reducer';
 import {injectable} from 'inversify';
 import {Client} from '../../api/Client';
 import {isRefreshTokenResponse} from '../../api/responses/TokenRefreshResponse';
+import {Action} from '../../store/Action';
+import {Dispatch} from '../../store/Dispatch';
+import {Logout, SetUserJwt} from '../Actions';
+import {decodeJwt} from '../Jwt';
 
 @injectable()
 export class RefreshJwt implements Effect {
   private listener: number | null;
+
   constructor(private api: Client) {
   }
 
-  async run(action: Action, dispatch: Dispatch<State>, getState: () => State): Promise<void> {
-    if (!Actions.isSetUserJwt(action)) {
+  async run(action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void> {
+    if (!(
+        action instanceof SetUserJwt
+      )) {
       return;
     }
 
     this.stopListening();
-    const waitTime =  (action.payload.jwt.secondsUntilExpired - 60) * 1000;
+    const waitTime = (
+      action.payload.jwt.secondsUntilExpired - 60
+    ) * 1000;
     this.listener = setTimeout(this.listen(dispatch, getState), waitTime);
   }
 
-  private listen(dispatch: Dispatch<State>, getState: () => State): () => Promise<void> {
+  private listen(dispatch: Dispatch, getState: () => State): () => Promise<void> {
     return async () => {
       const jwt = getState().auth.jwt;
       if (!jwt.isValid() || jwt.isExpired) {
@@ -33,16 +40,16 @@ export class RefreshJwt implements Effect {
     };
   }
 
-  private async refreshToken(dispatch: Dispatch<State>): Promise<void> {
+  private async refreshToken(dispatch: Dispatch): Promise<void> {
     const response = await this.api.refreshToken();
     const {body} = response;
     if (isRefreshTokenResponse(body)) {
-      dispatch(Actions.setUserJwt(body.jwt));
+      await dispatch(new SetUserJwt({jwt: decodeJwt(body.jwt)}));
       return;
     }
 
     this.stopListening();
-    dispatch(Actions.logout());
+    await dispatch(new Logout());
   }
 
   private stopListening() {

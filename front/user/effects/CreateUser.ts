@@ -1,14 +1,16 @@
 import {injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
-import {Action, Dispatch} from 'redux';
 import {Client} from '../../api/Client';
-import {Actions as UserActions} from '../Actions';
-import {Actions as CoreActions} from '../../core/Actions';
-import {Actions as LoginActions} from '../../auth/Actions';
-import {Actions as ApiActions} from '../../api/Actions';
-import {State} from '../../store/reducer';
+import {State} from '../../reducer';
 import {isErrorResponse} from '../../api/responses/ErrorResponse';
 import {isCreateUserResponse} from '../../api/responses/CreateUserResponse';
+import {Dispatch} from '../../store/Dispatch';
+import {Action} from '../../store/Action';
+import {ShowError} from '../../core/ShowError';
+import {CreateUser as CreateUserAction} from '../CreateUser';
+import {UserCreated} from '../UserCreated';
+import {LoginWithEmailAndPassword} from '../../auth/Actions';
+import {SetServerState} from '../../api/Actions';
 
 @injectable()
 export class CreateUser implements Effect {
@@ -16,8 +18,10 @@ export class CreateUser implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(action: Action, dispatch: Dispatch<State>, getState: () => State): Promise<void> {
-    if (!UserActions.isCreateUser(action)) {
+  async run(action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void> {
+    if (!(
+        action instanceof CreateUserAction
+      )) {
       return;
     }
 
@@ -26,18 +30,19 @@ export class CreateUser implements Effect {
     const body = response.body;
 
     if (isErrorResponse(body)) {
-      dispatch(CoreActions.showError(body.error, body.context));
-      return;
+      await dispatch(new ShowError(body));
     }
 
     if (isCreateUserResponse(body)) {
-      dispatch(UserActions.userCreated(body.user));
+      const promises = [];
+      promises.push(dispatch(new UserCreated({user: body.user})));
 
       const adminAlreadyExists = getState().api.state.hasAdmin;
       if (!adminAlreadyExists) {
-        dispatch(LoginActions.loginWithEmailAndPassword(user.email, password));
-        dispatch(ApiActions.setServerSate({hasAdmin: true}));
+        promises.push(dispatch(new LoginWithEmailAndPassword({email: user.email, password})));
+        promises.push(dispatch(new SetServerState({state: {hasAdmin: true}})));
       }
+      await Promise.all(promises);
     }
   }
 }

@@ -1,5 +1,5 @@
-import {Reducer} from 'redux';
-import {Actions} from './Actions';
+import {ShowError} from './ShowError';
+import {Action} from '../store/Action';
 
 export interface State {
   error: null | {
@@ -10,8 +10,8 @@ export interface State {
 
 const defaultState = {error: null};
 
-export const reducer: Reducer<State> = (state = defaultState, action) => {
-  if (Actions.isShowError(action)) {
+export function reducer(action: Action<any>, state: State = defaultState): State {
+  if (action instanceof ShowError) {
     return {
       ...state,
       error: {
@@ -21,4 +21,4 @@ export const reducer: Reducer<State> = (state = defaultState, action) => {
     };
   }
   return state;
-};
+}

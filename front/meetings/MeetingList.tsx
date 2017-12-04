@@ -1,11 +1,11 @@
 import * as React from 'react';
 import {Meeting} from '../api/Meeting';
 import {MeetingListEntry} from './MeetingListEntry';
-import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
-import {Actions as RouterActions} from '../router/Actions';
-import {Actions as MeetingActions} from './Actions';
 import {NewMeeting} from './NewMeeting';
 import {IconButton} from '../components/IconButton';
+import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
+import {ChangeRoute} from '../router/ChangeRoute';
+import {FetchMeetings} from './Actions';
 
 interface OwnProps {
   selectedMeetingId?: string;
@@ -58,8 +58,8 @@ interface DispatchProps {
 
 const dispatchMap: MapDispatchToProps<DispatchProps, OwnProps> = dispatch => {
   return {
-    selectMeeting: (id: string) => dispatch(RouterActions.changeRoute({path: '/meetings/' + id})),
-    triggerRefresh: () => dispatch(MeetingActions.fetchMeetings()),
+    selectMeeting: (id: string) => dispatch(new ChangeRoute({path: '/meetings/' + id})),
+    triggerRefresh: () => dispatch(new FetchMeetings()),
   };
 };
 

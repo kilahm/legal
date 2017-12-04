@@ -1,121 +1,36 @@
-import {Action} from 'redux';
 import {Meeting} from '../api/Meeting';
+import {Action, NullAction} from '../store/Action';
 
-export class Actions {
-  private static readonly ADD_MEETING = Symbol('add meeting');
-  private static CREATE_MEETING = Symbol('create meeting');
-  private static SET_NEW_MEETING_CALENDAR_OPEN = Symbol('set new meeting calendar open state');
-  private static UPDATE_DATE_FOR_NEW_MEETING = Symbol('update date in new meeting form');
-  private static RESET_SELECTED_DATE_FOR_NEW_MEETING = Symbol('reset date in new meeting');
-  private static SET_MEETINGS = Symbol('set meetings');
-  private static MEETINGS_FETCHED = Symbol('meetings fetched');
-  private static FETCH_MEETINGS = Symbol('fetch meetings');
-
-  static addMeeting(meeting: Meeting): AddMeeting {
-    return {
-      type: Actions.ADD_MEETING,
-      payload: {meeting},
-    };
-  }
-
-  static isAddMeeting(action: Action): action is AddMeeting {
-    return action.type === Actions.ADD_MEETING;
-  }
-
-  static createMeeting(start: Date): CreateMeeting {
-    return {
-      type: Actions.CREATE_MEETING,
-      payload: {start},
-    };
-  }
-
-  static isCreateMeeting(action: Action): action is CreateMeeting {
-    return action.type === Actions.CREATE_MEETING;
-  }
-
-  static setNewMeetingCalendarOpenState(openState: boolean): SetNewMeetingCalendarOpenState {
-    return {
-      type: Actions.SET_NEW_MEETING_CALENDAR_OPEN,
-      payload: {openState},
-    };
-  }
-
-  static isSetNewMeetingCalendarOpenState(action: Action): action is SetNewMeetingCalendarOpenState {
-    return action.type === Actions.SET_NEW_MEETING_CALENDAR_OPEN;
-  }
-
-  static updateSelectedDateForNewMeeting(date: Date): UpdateDateForNewMeeting {
-    return {
-      type: Actions.UPDATE_DATE_FOR_NEW_MEETING,
-      payload: {date},
-    };
-  }
-
-  static isUpdateDateForNewMeeting(action: Action): action is UpdateDateForNewMeeting {
-    return action.type === Actions.UPDATE_DATE_FOR_NEW_MEETING;
-  }
-
-  static resetSelectedDateForNewMeeting(): ResetSelectedDateForNewMeeting {
-    return {type: Actions.RESET_SELECTED_DATE_FOR_NEW_MEETING};
-  }
-
-  static isResetSelectedDateForNewMeeting(action: Action): action is ResetSelectedDateForNewMeeting {
-    return action.type === Actions.RESET_SELECTED_DATE_FOR_NEW_MEETING;
-  }
-
-  static setMeetings(meetings: { [key: string]: Meeting }): SetMeetings {
-    return {
-      type: Actions.SET_MEETINGS,
-      payload: {meetings},
-    };
-  }
-
-  static isSetMeetings(action: Action): action is SetMeetings {
-    return action.type === Actions.SET_MEETINGS;
-  }
-
-  static meetingsFetched(): MeetingsFetched {
-    return {type: Actions.MEETINGS_FETCHED};
-  }
-
-  static isMeetingsFetched(action: Action): action is MeetingsFetched {
-    return action.type === Actions.MEETINGS_FETCHED;
-  }
-
-  static fetchMeetings(): FetchMeetings {
-    return {type: Actions.FETCH_MEETINGS};
-  }
-
-  static isFetchMeetings(action: Action): action is FetchMeetings {
-    return action.type === Actions.FETCH_MEETINGS;
-  }
+export class ResetSelectedDateForNewMeeting extends NullAction {
 }
 
-interface ResetSelectedDateForNewMeeting extends Action {
+type UpdateDateForNewMeetingPayload = { date: Date };
+
+export class UpdateDateForNewMeeting extends Action<UpdateDateForNewMeetingPayload> {
 }
 
-interface UpdateDateForNewMeeting extends Action {
-  payload: { date: Date };
+type AddMeetingPayload = { meeting: Meeting };
+
+export class AddMeeting extends Action<AddMeetingPayload> {
 }
 
-export interface AddMeeting extends Action {
-  payload: { meeting: Meeting };
+type CreateMeetingPayload = { start: Date };
+
+export class CreateMeeting extends Action<CreateMeetingPayload> {
 }
 
-export interface CreateMeeting extends Action {
-  payload: { start: Date };
+type SetNewMeetingCalendarOpenStatePayload = { openState: boolean };
+
+export class SetNewMeetingCalendarOpenState extends Action<SetNewMeetingCalendarOpenStatePayload> {
 }
 
-export interface SetNewMeetingCalendarOpenState extends Action {
-  payload: { openState: boolean };
+type SetMeetingsPayload = { meetings: { [key: string]: Meeting } };
+
+export class SetMeetings extends Action<SetMeetingsPayload> {
 }
 
-export interface SetMeetings extends Action {
-  payload: { meetings: { [key: string]: Meeting } };
+export class MeetingsFetched extends NullAction {
 }
 
-export interface MeetingsFetched extends Action {
-}
-
-export interface FetchMeetings extends Action {
+export class FetchMeetings extends NullAction {
 }

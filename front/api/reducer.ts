@@ -1,6 +1,6 @@
-import {Reducer} from 'redux';
 import {ServerState} from './ServerState';
-import {Actions} from './Actions';
+import {Reducer} from '../store/Reducer';
+import {ServerStateFetched, SetServerState} from './Actions';
 
 export interface State {
   state: ServerState
@@ -12,15 +12,15 @@ const defaultState: State = {
   },
 };
 
-export const reducer: Reducer<State> = (state = defaultState, action) => {
-  if (Actions.isServerStateFetched(action)) {
+export const reducer: Reducer<State> = (action, state = defaultState) => {
+  if (action instanceof ServerStateFetched) {
     return {
       ...state,
       state: action.payload.state,
     };
   }
 
-  if (Actions.isSetServerState(action)) {
+  if (action instanceof SetServerState) {
     return {
       ...state,
       state: {

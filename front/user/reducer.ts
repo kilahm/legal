@@ -1,6 +1,6 @@
-import {formReducer, modelReducer} from 'react-redux-form';
-import {combineReducers, Reducer} from 'redux';
-import {FormState} from '../util';
+import {Reducer} from '../store/Reducer';
+import {combineReducers} from '../store/combineReducers';
+import {createFormReducer} from '../form/createFormReducer';
 
 export interface CreateAdminModel {
   name: string;
@@ -8,20 +8,22 @@ export interface CreateAdminModel {
   password: string;
 }
 
+export const createAdminForm = Symbol('create admin');
 const createAdminInitialValues: CreateAdminModel = {
   name: '',
   email: '',
   password: '',
 };
 
-export interface State extends FormState<CreateAdminModel> {
-  createAdmin: FormState<CreateAdminModel>
+export interface State {
+  createAdmin: {
+    model: CreateAdminModel
+  }
 }
 
 export const reducer: Reducer<State> = combineReducers({
   createAdmin: combineReducers({
-    model: modelReducer('user.createAdmin.model', createAdminInitialValues),
-    form: formReducer('user.createAdmin.model', createAdminInitialValues),
+    model: createFormReducer<CreateAdminModel>(createAdminForm, createAdminInitialValues),
   }),
 });
 

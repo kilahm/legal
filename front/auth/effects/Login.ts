@@ -1,43 +1,44 @@
 import {Client} from '../../api/Client';
 import {injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
-import {Action, Dispatch} from 'redux';
-import {Actions as LoginActions} from '../Actions';
-import {Actions as CoreActions} from '../../core/Actions';
-import {State} from '../../store/reducer';
-import {ErrorResponse, isErrorResponse} from '../../api/responses/ErrorResponse';
-import {isLoginResponse, LoginResponse} from '../../api/responses/LoginResponse';
+import {isErrorResponse} from '../../api/responses/ErrorResponse';
+import {isLoginResponse} from '../../api/responses/LoginResponse';
+import {LoginWithEmailAndPassword, SetUserJwt} from '../Actions';
+import {Action} from '../../store/Action';
+import {Dispatch} from '../../store/Dispatch';
+import {ShowError} from '../../core/ShowError';
+import {decodeJwt} from '../Jwt';
 
 @injectable()
 export class Login implements Effect {
 
-  constructor(
-    private api: Client,
-  ) {
+  constructor(private api: Client) {
   }
 
-  async run(action: Action, dispatch: Dispatch<State>): Promise<void> {
-    if (!LoginActions.isLoginWithEmailAndPassword(action)) {
+  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+    if (!(
+        action instanceof LoginWithEmailAndPassword
+      )) {
       return;
     }
     const {email, password} = action.payload;
     const {body} = await this.api.login(email, password);
-    Login.handleResponse(body, dispatch);
-    dispatch(LoginActions.setSubmitted(true));
-  }
 
-  private static handleResponse(body: LoginResponse | ErrorResponse, dispatch: Dispatch<any>): void {
     if (isErrorResponse(body)) {
-      dispatch(CoreActions.showError(body.error, body.context));
+      await dispatch(new ShowError(body));
       return;
     }
+
     if (isLoginResponse(body)) {
-      dispatch(LoginActions.setUserJwt(body.jwt));
+      await dispatch(new SetUserJwt({jwt: decodeJwt(body.jwt)}));
       return;
     }
-    dispatch(CoreActions.showError(
-      'Unable to log in at this time',
-      'Unexpected response from server: ' + JSON.stringify(body),
+
+    await dispatch(new ShowError(
+      {
+        error: 'Unable to log in at this time',
+        context: 'Unexpected response from server: ' + JSON.stringify(body),
+      },
     ));
   }
 }

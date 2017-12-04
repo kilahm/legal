@@ -1,6 +1,7 @@
-import {Action, Dispatch} from 'redux';
-import {State} from './reducer';
+import {State} from '../reducer';
+import {Action} from './Action';
+import {Dispatch} from './Dispatch';
 
-export interface Effect<S = State> {
-  run(action: Action, dispatch: Dispatch<S>, getState: () => S): void | Promise<void>;
+export interface Effect {
+  run(action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void>;
 }

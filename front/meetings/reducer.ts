@@ -1,6 +1,14 @@
-import {Action, Reducer} from 'redux';
 import {Meeting} from '../api/Meeting';
-import {Actions} from './Actions';
+import {
+  AddMeeting,
+  MeetingsFetched,
+  ResetSelectedDateForNewMeeting,
+  SetMeetings,
+  SetNewMeetingCalendarOpenState,
+  UpdateDateForNewMeeting,
+} from './Actions';
+import {Reducer} from '../store/Reducer';
+import {Action} from '../store/Action';
 
 export interface State {
   all: { [id: string]: Meeting };
@@ -19,8 +27,8 @@ const DefaultState: State = {
   needsData: true,
 };
 
-export const reducer: Reducer<State> = (state: State = DefaultState, action: Action): State => {
-  if (Actions.isAddMeeting(action)) {
+export const reducer: Reducer<State> = (action: Action<any>, state: State = DefaultState): State => {
+  if (action instanceof AddMeeting) {
     const meeting = action.payload.meeting;
     return {
       ...state,
@@ -30,7 +38,7 @@ export const reducer: Reducer<State> = (state: State = DefaultState, action: Act
       },
     };
   }
-  if (Actions.isSetNewMeetingCalendarOpenState(action)) {
+  if (action instanceof SetNewMeetingCalendarOpenState) {
     return {
       ...state,
       newMeeting: {
@@ -39,7 +47,7 @@ export const reducer: Reducer<State> = (state: State = DefaultState, action: Act
       },
     };
   }
-  if (Actions.isUpdateDateForNewMeeting(action)) {
+  if (action instanceof UpdateDateForNewMeeting) {
     return {
       ...state,
       newMeeting: {
@@ -48,19 +56,19 @@ export const reducer: Reducer<State> = (state: State = DefaultState, action: Act
       },
     };
   }
-  if (Actions.isSetMeetings(action)) {
+  if (action instanceof SetMeetings) {
     return {
       ...state,
       all: action.payload.meetings,
     };
   }
-  if (Actions.isMeetingsFetched(action)) {
+  if (action instanceof MeetingsFetched) {
     return {
       ...state,
       needsData: false,
     };
   }
-  if (Actions.isResetSelectedDateForNewMeeting(action)) {
+  if (action instanceof ResetSelectedDateForNewMeeting) {
     const newMeetingState = {...state.newMeeting};
     delete newMeetingState.selectedDate;
     return {

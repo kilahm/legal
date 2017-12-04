@@ -1,12 +1,12 @@
 import * as React from 'react';
 import {StatelessComponent} from 'react';
-import {connect, MapStateToProps} from 'react-redux';
-import {State} from '../store/reducer';
+import {State} from '../reducer';
 import {Landing} from '../landing/Landing';
 import {routes} from '../routes';
 import {Login} from '../auth/Login';
 import {CreateAdmin} from '../user/CreateAdmin';
 import {NotFound} from './NotFound';
+import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 
 interface StateProps {
   path: string | null;
@@ -60,4 +60,7 @@ const stateMap: MapStateToProps<StateProps, {}> = (state: State) => {
     adminExists: state.api.state.hasAdmin,
   };
 };
-export const Router = connect<StateProps, DispatchProps, {}>(stateMap)(RouterComponent);
+const dispatchMap: MapDispatchToProps<{}, {}> = () => (
+  {}
+);
+export const Router = connect<StateProps, DispatchProps, {}>(stateMap, dispatchMap)(RouterComponent);

@@ -1,8 +1,8 @@
 import * as React from 'react';
-import {connect, MapDispatchToProps, MapStateToProps} from 'react-redux';
-import {Dispatch} from 'redux';
-import {State} from '../store/reducer';
+import {State} from '../reducer';
 import {NavigationMenuItem} from './MainNavigation';
+import {Dispatch} from '../store/Dispatch';
+import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 
 interface StateProps {
   navigation: Array<NavigationMenuItem>
@@ -10,7 +10,7 @@ interface StateProps {
 }
 
 interface DispatchProps {
-  dispatch: Dispatch<State>;
+  dispatch: Dispatch;
 }
 
 type Props = StateProps & DispatchProps;

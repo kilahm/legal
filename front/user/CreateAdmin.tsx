@@ -1,16 +1,24 @@
 import * as React from 'react';
-import {Control, Form} from 'react-redux-form';
-import {connect,} from 'react-redux';
-import {State} from '../store/reducer';
-import {CreateAdminModel} from './reducer';
-import {Actions} from './Actions';
-import {Dispatch} from 'redux';
+import {State} from '../reducer';
+import {createAdminForm, CreateAdminModel} from './reducer';
 import {Role} from '../api/User';
+import {Form} from '../form/Form';
+import {Input} from '../form/Input';
+import {connect, MapDispatchToProps} from '../store/connect';
+import {Dispatch} from '../store/Dispatch';
+import {CreateUser} from './CreateUser';
 
 
-type CreateAdminProps = CreateAdminDispatchProps & CreateAdminStateProps;
+type Props = DispatchProps & StateProps;
 
-function CreateAdminComponent({pending, createAdmin, adminExists}: CreateAdminProps): JSX.Element {
+function isModel(model: any): model is CreateAdminModel {
+  return typeof model === 'object'
+    && typeof model.name === 'string'
+    && typeof model.email === 'string'
+    && typeof model.password === 'string';
+}
+
+function CreateAdminComponent({pending, createAdmin, adminExists}: Props) {
   if (adminExists) {
     return (
       <h1>Root account already exists</h1>
@@ -18,31 +26,34 @@ function CreateAdminComponent({pending, createAdmin, adminExists}: CreateAdminPr
   }
   return (
     <Form
-      model={'user.createAdmin.model'}
-      onSubmit={createAdmin}
+      modelPrefix={'user.createAdmin.model'}
+      submit={model => isModel(model) ? createAdmin(model) : null}
     >
 
       <label htmlFor="create-admin-email">Name</label>
-      <Control
+      <Input
         id="create-admin-name"
-        model=".name"
+        formId={createAdminForm}
+        model="name"
         disabled={pending}
       />
 
       <label htmlFor="create-admin-email">Email</label>
-      <Control.input
+      <Input
         type="email"
+        formId={createAdminForm}
         id="create-admin-email"
-        model=".email"
+        model="email"
         disabled={pending}
       />
 
       <label htmlFor="create-admin-password">Password</label>
-      <Control.input
+      <Input
         className=""
+        formId={createAdminForm}
         type="password"
         id="create-admin-password"
-        model=".password"
+        model="password"
         disabled={pending}
       />
 
@@ -51,36 +62,38 @@ function CreateAdminComponent({pending, createAdmin, adminExists}: CreateAdminPr
   );
 }
 
-interface CreateAdminStateProps {
+interface StateProps {
   pending: boolean;
   adminExists: boolean;
 }
 
 const stateMap = (state: State) => {
   return {
-    pending: state.user.createAdmin.form.$form.pending,
+    pending: false,
     adminExists: state.api.state.hasAdmin,
   };
 };
 
-interface CreateAdminDispatchProps {
+interface DispatchProps {
   createAdmin: (data: CreateAdminModel) => void;
 }
 
-const dispatchMap = (dispatch: Dispatch<any>) => {
+const dispatchMap: MapDispatchToProps<DispatchProps, {}> = (dispatch: Dispatch) => {
   return {
-    createAdmin: ({name, email, password}: CreateAdminModel) => dispatch(Actions.createUser(
+    createAdmin: ({name, email, password}: CreateAdminModel) => dispatch(new CreateUser(
       {
-        name,
-        email,
-        roles: [Role.ADMIN],
+        user: {
+          name,
+          email,
+          roles: [Role.ADMIN],
+        },
+        password,
       },
-      password,
     )),
   };
 };
 
-export const CreateAdmin = connect<CreateAdminStateProps, CreateAdminDispatchProps, {}>(
+export const CreateAdmin = connect<StateProps, DispatchProps, {}>(
   stateMap,
   dispatchMap,
 )(CreateAdminComponent);

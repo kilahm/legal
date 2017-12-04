@@ -1,27 +1,17 @@
 import {ContainerModule} from 'inversify';
-import {applyMiddleware, createStore, Store} from 'redux';
-import {default as reducer, State} from './reducer';
-import {composeWithDevTools} from 'redux-devtools-extension';
+import {default as reducer, State} from '../reducer';
 import {EffectClasses} from '../effects';
-import {EffectManager} from './EffectManager';
-import {Effect} from './Effect';
+import {Store} from './Store';
 
 export default new ContainerModule(bind => {
-  bind<Effect[]>('effects').toDynamicValue(context => {
-    return EffectClasses.map(effectClass => context.container.get(effectClass));
+  bind<Store>(Store).toDynamicValue(context => {
+    const effects = EffectClasses.map(effectClass => context.container.get(effectClass));
+    return new Store(effects, reducer);
   }).inSingletonScope();
-  bind<EffectManager>(EffectManager).toSelf().inSingletonScope();
-  bind<Store<State>>('store').toDynamicValue(context => {
-    const em = context.container.get<EffectManager>(EffectManager);
-    return createStore(
-      reducer,
-      composeWithDevTools(
-        applyMiddleware(
-          em.buildMiddleware(),
-        ),
-      ),
-    );
-  }).inSingletonScope();
+
   bind<() => () => State>('getStateFactory')
-    .toDynamicValue(context => () => context.container.get<Store<State>>('store').getState);
+    .toDynamicValue(context => () => {
+      const store = context.container.get<Store>(Store);
+      return store.getState.bind(store);
+    });
 });

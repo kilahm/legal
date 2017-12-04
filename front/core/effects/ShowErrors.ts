@@ -1,12 +1,14 @@
 import {Effect} from '../../store/Effect';
-import {Action} from 'react-redux-form';
-import {Actions} from '../Actions';
 import {injectable} from 'inversify';
+import {ShowError} from '../ShowError';
+import {Action} from '../../store/Action';
 
 @injectable()
 export class ShowErrors implements Effect {
-  run(action: Action): void {
-    if(!Actions.isShowError(action)) {
+  async run(action: Action<any>): Promise<void> {
+    if (!(
+        action instanceof ShowError
+      )) {
       return;
     }
     console.error(JSON.stringify(action.payload));

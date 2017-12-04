@@ -1,7 +1,6 @@
 import {inject, injectable} from 'inversify';
 import {Http} from './Http';
 import {User} from './User';
-import {State} from '../store/reducer';
 import {ErrorResponse} from './responses/ErrorResponse';
 import {CreateUserResponse} from './responses/CreateUserResponse';
 import {LoginResponse} from './responses/LoginResponse';
@@ -10,6 +9,7 @@ import {ServerStateResponse} from './responses/ServerStateResponse';
 import {CreateMeetingResponse, transformCreateMeetingResponse} from './responses/CreateMeetingResponse';
 import {Meeting} from './Meeting';
 import {transformGetMeetingsResponse} from './responses/GetMeetingsResponse';
+import {State} from '../reducer';
 
 export class ApiError extends Error {
 }
@@ -106,7 +106,7 @@ export class Client {
     };
   }
 
-  private buildHeaders(headers: Headers | string[][] | undefined): Headers {
+  private buildHeaders(headers: Headers | string[][] | undefined | { [key: string]: string }): Headers {
     const heads = new Headers(headers);
     const jwt = this.getStateFactory()().auth.jwt.raw;
     if (jwt) {

@@ -1,9 +1,10 @@
 import {inject, injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
-import {Action, Dispatch} from 'redux';
-import {Actions as LoginActions} from '../Actions';
-import {State} from '../../store/reducer';
 import {PersistJwt} from './PersistJwt';
+import {Dispatch} from '../../store/Dispatch';
+import {Action} from '../../store/Action';
+import {LoadUserJwt, SetUserJwt} from '../Actions';
+import {decodeJwt} from '../Jwt';
 
 @injectable()
 export class LoadJwt implements Effect {
@@ -13,13 +14,15 @@ export class LoadJwt implements Effect {
   ) {
   }
 
-  async run(action: Action, dispatch: Dispatch<State>): Promise<void> {
-    if (!LoginActions.isLoadUserJwt(action)) {
+  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+    if (!(
+        action instanceof LoadUserJwt
+      )) {
       return;
     }
     const localJwt = this.localStorage.getItem(PersistJwt.JwtKey.toString());
     if (typeof localJwt === 'string') {
-      dispatch(LoginActions.setUserJwt(localJwt));
+      await dispatch(new SetUserJwt({jwt: decodeJwt(localJwt)}));
     }
   }
 }
