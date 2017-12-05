@@ -5,3 +5,4 @@
 - [ ] Visualize meeting list as cards
 - [ ] Meeting stats: action items todo and done
 - [ ] Action item with a many to many relationship to meetings
+- [ ] Empty JWT should set route to home, not cause errors

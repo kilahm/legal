@@ -6,6 +6,7 @@ import store from './store/provider';
 import user from './user/provider';
 import core from './core/provider';
 import meetings from './meetings/provider';
+import logging from './logging/provider';
 import ServiceIdentifier = interfaces.ServiceIdentifier;
 
 const modules = [
@@ -16,6 +17,7 @@ const modules = [
   user,
   core,
   meetings,
+  logging,
 ];
 
 export const container = new Container();
