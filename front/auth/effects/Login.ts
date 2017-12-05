@@ -8,6 +8,7 @@ import {Action} from '../../store/Action';
 import {Dispatch} from '../../store/Dispatch';
 import {ShowError} from '../../core/ShowError';
 import {decodeJwt} from '../Jwt';
+import {State} from '../../reducer';
 
 @injectable()
 export class Login implements Effect {
@@ -15,7 +16,8 @@ export class Login implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch): Promise<void> {
+    await next();
     if (!(
         action instanceof LoginWithEmailAndPassword
       )) {

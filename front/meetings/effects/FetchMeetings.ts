@@ -14,7 +14,8 @@ export class FetchMeetings implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void> {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void> {
+    await next();
     if (!FetchMeetings.handleAction(action, getState())) {
       return;
     }

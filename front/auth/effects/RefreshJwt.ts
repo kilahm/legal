@@ -15,7 +15,8 @@ export class RefreshJwt implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void> {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void> {
+    await next();
     if (!(
         action instanceof SetUserJwt
       )) {

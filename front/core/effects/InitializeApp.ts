@@ -11,6 +11,7 @@ import {InitializeApp as InitAction} from '../InitializeApp';
 import {Dispatch} from '../../store/Dispatch';
 import {Action} from '../../store/Action';
 import {ServerStateFetched} from '../../api/Actions';
+import {State} from '../../reducer';
 
 
 @injectable()
@@ -18,7 +19,8 @@ export class InitializeApp implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch): Promise<void> {
+    await next();
     if (!(
         action instanceof InitAction
       )) {

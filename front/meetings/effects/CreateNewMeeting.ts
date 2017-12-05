@@ -7,6 +7,7 @@ import {isMeeting} from '../../api/Meeting';
 import {Action} from '../../store/Action';
 import {Dispatch} from '../../store/Dispatch';
 import {ShowError} from '../../core/ShowError';
+import {State} from '../../reducer';
 
 @injectable()
 export class CreateNewMeeting implements Effect {
@@ -14,7 +15,8 @@ export class CreateNewMeeting implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch): Promise<void> {
+    await next();
     if (!(
         action instanceof CreateMeeting
       )) {

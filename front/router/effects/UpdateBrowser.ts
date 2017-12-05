@@ -4,6 +4,7 @@ import {Dispatch} from '../../store/Dispatch';
 import {Action} from '../../store/Action';
 import {ChangeRoute} from '../ChangeRoute';
 import {SetRoute} from '../SetRoute';
+import {State} from '../../reducer';
 
 @injectable()
 export class UpdateBrowser implements Effect {
@@ -12,7 +13,8 @@ export class UpdateBrowser implements Effect {
   ) {
   }
 
-  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch): Promise<void> {
+    await next();
     if (!(
         action instanceof ChangeRoute
       )) {

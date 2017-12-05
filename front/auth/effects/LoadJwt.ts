@@ -5,6 +5,7 @@ import {Dispatch} from '../../store/Dispatch';
 import {Action} from '../../store/Action';
 import {LoadUserJwt, SetUserJwt} from '../Actions';
 import {decodeJwt} from '../Jwt';
+import {State} from '../../reducer';
 
 @injectable()
 export class LoadJwt implements Effect {
@@ -14,7 +15,8 @@ export class LoadJwt implements Effect {
   ) {
   }
 
-  async run(action: Action<any>, dispatch: Dispatch): Promise<void> {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch): Promise<void> {
+    await next();
     if (!(
         action instanceof LoadUserJwt
       )) {
