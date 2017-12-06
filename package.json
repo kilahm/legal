@@ -23,8 +23,9 @@
     "@types/jwt-decode": "^2.2.1",
     "@types/moment": "^2.13.0",
     "@types/react": "^16.0.25",
+    "@types/react-addons-create-fragment": "^0.14.17",
     "@types/react-dom": "^16.0.3",
-    "bootstrap": "^3.3.7",
+    "bulma": "^0.6.1",
     "classnames": "^2.2.5",
     "inversify": "^4.5.2",
     "inversify-inject-decorators": "^3.0.2",
@@ -32,6 +33,7 @@
     "jwt-decode": "^2.2.0",
     "moment": "^2.19.3",
     "react": "^16.2.0",
+    "react-addons-create-fragment": "^15.6.2",
     "react-datetime": "^2.11.0",
     "react-dom": "^16.2.0",
     "reflect-metadata": "^0.1.10"

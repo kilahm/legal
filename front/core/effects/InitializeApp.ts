@@ -28,7 +28,7 @@ export class InitializeApp implements Effect {
     }
 
     const promises: Array<Promise<any>> = [];
-    promises.push(dispatch(new LoadUserJwt()));
+    const stateAfterJwtLoad = await dispatch(new LoadUserJwt());
     const {body} = await this.api.getState();
 
     if (isErrorResponse(body)) {
@@ -38,9 +38,13 @@ export class InitializeApp implements Effect {
       promises.push(dispatch(new ServerStateFetched({state: body.state})));
     }
 
-
-    promises.push(dispatch(new SetRoute(action.payload.browserRoute)));
+    if (stateAfterJwtLoad.auth.jwt.isValid()) {
+      promises.push(dispatch(new SetRoute(action.payload.browserRoute)));
+    } else {
+      promises.push(dispatch(new SetRoute({path: '/'})));
+    }
     await Promise.all(promises);
-    ReactDOM.render(action.payload.rootElement, action.payload.domRoot);
+    ReactDOM.render(action.payload.contentComponent, action.payload.contentRoot);
+    ReactDOM.render(action.payload.navComponent, action.payload.navRoot);
   }
 }

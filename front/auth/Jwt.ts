@@ -10,7 +10,6 @@ export function decodeJwt(raw: string): Jwt {
   }
   const errors = claimErrors(claims);
   if (errors.length > 0) {
-    console.log(errors);
     return new InvalidJwt(raw, errors);
   }
   return new ValidJwt(raw, claims);

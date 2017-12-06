@@ -1,26 +1,28 @@
 import * as React from 'react';
 import {container} from './container';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap/dist/css/bootstrap-theme.css';
 import 'react-datetime/css/react-datetime.css';
-import {Router} from './router/Router';
-import {Main} from './Main';
+import 'bulma/css/bulma.css';
 import {Store} from './store/Store';
 import {InitializeApp} from './core/InitializeApp';
+import {Menu} from './menu/Menu';
+import {Router} from './router/Router';
 
 (
-  () => {
+  async () => {
     const store = container.get<Store>(Store);
-    const domRoot = document.getElementById('react-container');
-    if (domRoot === null) {
-      console.error('Unable to find dom root node #react-container');
+    const navRoot = document.getElementById('main-nav');
+    const contentRoot = document.getElementById('content');
+    if (navRoot === null || contentRoot === null) {
+      console.error('Unable to find root nodes');
       return;
     }
     const location = new URL(document.location.toString());
-    store.dispatch(new InitializeApp(
+    await store.dispatch(new InitializeApp(
       {
-        rootElement: <Main><Router/></Main>,
-        domRoot: domRoot,
+        navRoot,
+        navComponent: <Menu/>,
+        contentRoot,
+        contentComponent: <Router/>,
         browserRoute: {path: location.pathname, query: location.search},
       },
     ));

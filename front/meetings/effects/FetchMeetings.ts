@@ -5,7 +5,7 @@ import {isErrorResponse} from '../../api/responses/ErrorResponse';
 import {injectable} from 'inversify';
 import {Action} from '../../store/Action';
 import {Dispatch} from '../../store/Dispatch';
-import {MeetingsFetched, SetMeetings} from '../Actions';
+import {FetchMeetings as FetchMeetingsAction, MeetingsFetched, SetMeetings} from '../Actions';
 import {ShowError} from '../../core/ShowError';
 import {SetRoute} from '../../router/SetRoute';
 
@@ -14,9 +14,9 @@ export class FetchMeetings implements Effect {
   constructor(private api: Client) {
   }
 
-  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch, getState: () => State): Promise<void> {
-    await next();
-    if (!FetchMeetings.handleAction(action, getState())) {
+  async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch): Promise<void> {
+    const state = await next();
+    if (FetchMeetings.skipAction(action, state)) {
       return;
     }
     const {body} = await this.api.getMeetings();
@@ -24,17 +24,22 @@ export class FetchMeetings implements Effect {
       await dispatch(new ShowError(body));
       return;
     }
-    await dispatch(new SetMeetings({meetings: body}));
-    await dispatch(new MeetingsFetched());
+    await Promise.all([
+      dispatch(new SetMeetings({meetings: body})),
+      dispatch(new MeetingsFetched()),
+    ]);
+
   }
 
-  private static handleAction(action: Action<any>, state: State): boolean {
-    if (action instanceof SetRoute) {
-      return action.payload.path.match(/meetings/) !== null && state.meetings.needsData;
-    }
-    if (action instanceof FetchMeetings) {
+  private static skipAction(action: Action<any>, state: State): boolean {
+    if (!state.auth.jwt.isValid()) {
       return true;
     }
-    return false;
+    if (action instanceof SetRoute) {
+      return action.payload.path.match(/meetings/) === null || !state.meetings.needsData;
+    }
+    return !(
+      action instanceof FetchMeetingsAction
+    );
   }
 }
