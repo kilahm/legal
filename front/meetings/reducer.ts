@@ -1,14 +1,12 @@
 import {Meeting} from '../api/Meeting';
-import {
-  AddMeeting,
-  MeetingsFetched,
-  ResetSelectedDateForNewMeeting,
-  SetMeetings,
-  SetNewMeetingCalendarOpenState,
-  UpdateDateForNewMeeting,
-} from './Actions';
 import {Reducer} from '../store/Reducer';
 import {Action} from '../store/Action';
+import {AddMeeting} from './actions/AddMeeting';
+import {SetNewMeetingCalendarOpenState} from './actions/SetNewMeetingCalendarOpenState';
+import {UpdateDateForNewMeeting} from './actions/UpdateDateForNewMeeting';
+import {SetMeetings} from './actions/SetMeetings';
+import {MeetingsFetched} from './actions/MeetingsFetched';
+import {ResetSelectedDateForNewMeeting} from './actions/ResetSelectedDateForNewMeeting';
 
 export interface State {
   all: { [id: string]: Meeting };

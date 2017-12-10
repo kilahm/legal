@@ -1,4 +1,4 @@
-import {Action} from '../store/Action';
+import {Action} from '../../store/Action';
 
 type ShowErrorPayload = {
   error: string,

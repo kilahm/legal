@@ -1,7 +1,7 @@
 import {defaultMainNavigation, NavigationMenuItem} from './MainNavigation';
 import {Reducer} from '../store/Reducer';
 import {Action} from '../store/Action';
-import {AddMainNavigation} from './AddMainNavigation';
+import {AddMainNavigation} from './actions/AddMainNavigation';
 
 export interface State {
   mainNavigation: NavigationMenuItem[]

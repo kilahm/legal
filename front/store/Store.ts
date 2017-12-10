@@ -2,7 +2,7 @@ import {Action} from './Action';
 import {Reducer} from './Reducer';
 import {Effect} from './Effect';
 import {Subject} from '@reactivex/rxjs/dist/package';
-import {StoreInit} from './StoreInit';
+import {StoreInit} from './actions/StoreInit';
 import {State} from '../reducer';
 import {injectable} from 'inversify';
 import {EffectStack} from './EffectStack';

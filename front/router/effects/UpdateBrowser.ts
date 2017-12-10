@@ -2,8 +2,8 @@ import {inject, injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
 import {Dispatch} from '../../store/Dispatch';
 import {Action} from '../../store/Action';
-import {ChangeRoute} from '../ChangeRoute';
-import {SetRoute} from '../SetRoute';
+import {ChangeRoute} from '../actions/ChangeRoute';
+import {SetRoute} from '../actions/SetRoute';
 import {State} from '../../reducer';
 
 @injectable()

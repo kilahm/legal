@@ -3,12 +3,13 @@ import {injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
 import {isErrorResponse} from '../../api/responses/ErrorResponse';
 import {isLoginResponse} from '../../api/responses/LoginResponse';
-import {LoginWithEmailAndPassword, SetUserJwt} from '../Actions';
 import {Action} from '../../store/Action';
 import {Dispatch} from '../../store/Dispatch';
-import {ShowError} from '../../core/ShowError';
+import {ShowError} from '../../core/actions/ShowError';
 import {decodeJwt} from '../Jwt';
 import {State} from '../../reducer';
+import {LoginWithEmailAndPassword} from '../actions/LoginWithEmailAndPassword';
+import {SetUserJwt} from '../actions/SetUserJwt';
 
 @injectable()
 export class Login implements Effect {

@@ -1,17 +1,17 @@
 import {Effect} from '../../store/Effect';
 import {Client} from '../../api/Client';
-import {LoadUserJwt} from '../../auth/Actions';
 import {injectable} from 'inversify';
 import * as ReactDOM from 'react-dom';
 import {isErrorResponse} from '../../api/responses/ErrorResponse';
-import {CannotInit} from '../CannotInit';
-import {ShowError} from '../ShowError';
-import {SetRoute} from '../../router/SetRoute';
-import {InitializeApp as InitAction} from '../InitializeApp';
+import {CannotInit} from '../actions/CannotInit';
+import {ShowError} from '../actions/ShowError';
+import {SetRoute} from '../../router/actions/SetRoute';
+import {InitializeApp as InitAction} from '../actions/InitializeApp';
 import {Dispatch} from '../../store/Dispatch';
 import {Action} from '../../store/Action';
 import {ServerStateFetched} from '../../api/Actions';
 import {State} from '../../reducer';
+import {LoadUserJwt} from '../../auth/actions/LoadUserJwt';
 
 
 @injectable()

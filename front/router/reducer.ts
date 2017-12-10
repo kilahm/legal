@@ -1,5 +1,5 @@
 import {Action} from '../store/Action';
-import {SetRoute} from './SetRoute';
+import {SetRoute} from './actions/SetRoute';
 
 export interface State {
   path: string | null;

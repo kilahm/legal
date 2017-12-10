@@ -1,6 +1,6 @@
 import {Action} from '../store/Action';
 import {Reducer} from '../store/Reducer';
-import {UpdateField} from './UpdateField';
+import {UpdateField} from './actions/UpdateField';
 
 export function createFormReducer<Model>(
   form: Symbol,

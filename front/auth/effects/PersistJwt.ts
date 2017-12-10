@@ -1,9 +1,10 @@
 import {inject, injectable} from 'inversify';
 import {Effect} from '../../store/Effect';
 import {Action} from '../../store/Action';
-import {Logout, SetUserJwt} from '../Actions';
 import {State} from '../../reducer';
 import {Dispatch} from '../../store/Dispatch';
+import {SetUserJwt} from '../actions/SetUserJwt';
+import {Logout} from '../actions/Logout';
 
 @injectable()
 export class PersistJwt implements Effect {

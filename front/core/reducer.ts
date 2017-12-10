@@ -1,6 +1,6 @@
-import {ShowError} from './ShowError';
+import {ShowError} from './actions/ShowError';
 import {Action} from '../store/Action';
-import {InitializeApp} from './InitializeApp';
+import {InitializeApp} from './actions/InitializeApp';
 
 export interface State {
   error: null | {

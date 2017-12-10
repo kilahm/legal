@@ -4,8 +4,8 @@ import {MeetingListEntry} from './MeetingListEntry';
 import {NewMeeting} from './NewMeeting';
 import {IconButton} from '../components/IconButton';
 import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
-import {ChangeRoute} from '../router/ChangeRoute';
-import {FetchMeetings} from './Actions';
+import {ChangeRoute} from '../router/actions/ChangeRoute';
+import {FetchMeetings} from './actions/FetchMeetings';
 
 interface OwnProps {
   selectedMeetingId?: string;

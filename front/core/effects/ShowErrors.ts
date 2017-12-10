@@ -1,6 +1,6 @@
 import {Effect} from '../../store/Effect';
 import {inject, injectable} from 'inversify';
-import {ShowError} from '../ShowError';
+import {ShowError} from '../actions/ShowError';
 import {Action} from '../../store/Action';
 import {State} from '../../reducer';
 import {LOGGER} from '../../logging/provider';

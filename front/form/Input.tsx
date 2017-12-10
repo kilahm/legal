@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {ChangeEventHandler, InputHTMLAttributes, ReactElement, StatelessComponent} from 'react';
 import {connect, MapDispatchToProps} from '../store/connect';
-import {UpdateField} from './UpdateField';
+import {UpdateField} from './actions/UpdateField';
 
 interface OwnProps extends InputHTMLAttributes<HTMLInputElement> {
   model: string;

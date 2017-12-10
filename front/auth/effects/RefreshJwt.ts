@@ -5,8 +5,9 @@ import {Client} from '../../api/Client';
 import {isRefreshTokenResponse} from '../../api/responses/TokenRefreshResponse';
 import {Action} from '../../store/Action';
 import {Dispatch} from '../../store/Dispatch';
-import {Logout, SetUserJwt} from '../Actions';
 import {decodeJwt} from '../Jwt';
+import {SetUserJwt} from '../actions/SetUserJwt';
+import {Logout} from '../actions/Logout';
 
 @injectable()
 export class RefreshJwt implements Effect {

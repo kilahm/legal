@@ -6,7 +6,7 @@ import {Form} from '../form/Form';
 import {Input} from '../form/Input';
 import {connect, MapDispatchToProps} from '../store/connect';
 import {Dispatch} from '../store/Dispatch';
-import {CreateUser} from './CreateUser';
+import {CreateUser} from './actions/CreateUser';
 
 
 type Props = DispatchProps & StateProps;

@@ -1,5 +1,5 @@
-import {User} from '../api/User';
-import {Action} from '../store/Action';
+import {User} from '../../api/User';
+import {Action} from '../../store/Action';
 
 type Payload = {
   user: User,

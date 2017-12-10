@@ -1,7 +1,8 @@
-import {Logout, SetUserJwt} from './Actions';
 import {InvalidJwt, Jwt} from './Jwt';
 import {combineReducers} from '../store/combineReducers';
 import {createFormReducer} from '../form/createFormReducer';
+import {SetUserJwt} from './actions/SetUserJwt';
+import {Logout} from './actions/Logout';
 
 export interface State {
   jwt: Jwt;

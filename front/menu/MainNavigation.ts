@@ -1,6 +1,6 @@
 import {State} from '../reducer';
 import {Dispatch} from '../store/Dispatch';
-import {ChangeRoute} from '../router/ChangeRoute';
+import {ChangeRoute} from '../router/actions/ChangeRoute';
 
 export interface NavigationMenuItem {
   text: string;

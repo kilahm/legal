@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {StatelessComponent} from 'react';
-import {LoginWithEmailAndPassword} from './Actions';
 import {Input} from '../form/Input';
 import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 import {LoginForm} from './reducer';
 import {Form} from '../form/Form';
+import {LoginWithEmailAndPassword} from './actions/LoginWithEmailAndPassword';
 
 interface StateProps {
 }

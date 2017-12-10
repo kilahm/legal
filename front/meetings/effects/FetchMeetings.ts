@@ -5,9 +5,11 @@ import {isErrorResponse} from '../../api/responses/ErrorResponse';
 import {injectable} from 'inversify';
 import {Action} from '../../store/Action';
 import {Dispatch} from '../../store/Dispatch';
-import {FetchMeetings as FetchMeetingsAction, MeetingsFetched, SetMeetings} from '../Actions';
-import {ShowError} from '../../core/ShowError';
-import {SetRoute} from '../../router/SetRoute';
+import {ShowError} from '../../core/actions/ShowError';
+import {SetRoute} from '../../router/actions/SetRoute';
+import {MeetingsFetched} from '../actions/MeetingsFetched';
+import {SetMeetings} from '../actions/SetMeetings';
+import {FetchMeetings as FetchMeetingsAction} from '../actions/FetchMeetings';
 
 @injectable()
 export class FetchMeetings implements Effect {

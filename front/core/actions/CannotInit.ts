@@ -1,4 +1,4 @@
-import {Action} from '../store/Action';
+import {Action} from '../../store/Action';
 
 type CannotInitPayload = { reason: string, context: string };
 

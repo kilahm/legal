@@ -4,15 +4,13 @@ import {Moment} from 'moment';
 import * as Datetime from 'react-datetime';
 import {State} from '../reducer';
 import {IconButton} from '../components/IconButton';
-import {
-  CreateMeeting,
-  ResetSelectedDateForNewMeeting,
-  SetNewMeetingCalendarOpenState,
-  UpdateDateForNewMeeting,
-} from './Actions';
 import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 import moment = require('moment');
 import classNames = require('classnames');
+import {CreateMeeting} from './actions/CreateMeeting';
+import {SetNewMeetingCalendarOpenState} from './actions/SetNewMeetingCalendarOpenState';
+import {UpdateDateForNewMeeting} from './actions/UpdateDateForNewMeeting';
+import {ResetSelectedDateForNewMeeting} from './actions/ResetSelectedDateForNewMeeting';
 
 type Props = DispatchProps & StateProps;
 

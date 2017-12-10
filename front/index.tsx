@@ -3,7 +3,7 @@ import {container} from './container';
 import 'react-datetime/css/react-datetime.css';
 import 'bulma/css/bulma.css';
 import {Store} from './store/Store';
-import {InitializeApp} from './core/InitializeApp';
+import {InitializeApp} from './core/actions/InitializeApp';
 import {App} from './App';
 
 (

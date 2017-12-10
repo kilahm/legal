@@ -3,9 +3,10 @@ import {Effect} from '../../store/Effect';
 import {PersistJwt} from './PersistJwt';
 import {Dispatch} from '../../store/Dispatch';
 import {Action} from '../../store/Action';
-import {LoadUserJwt, SetUserJwt} from '../Actions';
 import {decodeJwt} from '../Jwt';
 import {State} from '../../reducer';
+import {LoadUserJwt} from '../actions/LoadUserJwt';
+import {SetUserJwt} from '../actions/SetUserJwt';
 
 @injectable()
 export class LoadJwt implements Effect {

@@ -6,11 +6,11 @@ import {isErrorResponse} from '../../api/responses/ErrorResponse';
 import {isCreateUserResponse} from '../../api/responses/CreateUserResponse';
 import {Dispatch} from '../../store/Dispatch';
 import {Action} from '../../store/Action';
-import {ShowError} from '../../core/ShowError';
-import {CreateUser as CreateUserAction} from '../CreateUser';
-import {UserCreated} from '../UserCreated';
-import {LoginWithEmailAndPassword} from '../../auth/Actions';
+import {ShowError} from '../../core/actions/ShowError';
+import {CreateUser as CreateUserAction} from '../actions/CreateUser';
+import {UserCreated} from '../actions/UserCreated';
 import {SetServerState} from '../../api/Actions';
+import {LoginWithEmailAndPassword} from '../../auth/actions/LoginWithEmailAndPassword';
 
 @injectable()
 export class CreateUser implements Effect {
