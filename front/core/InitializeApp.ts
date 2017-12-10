@@ -3,8 +3,6 @@ import {RouteParams} from '../router/RouteParams';
 import {ReactElement} from 'react';
 
 type Payload = {
-  navRoot: Element,
-  navComponent: ReactElement<any>,
   contentRoot: Element,
   contentComponent: ReactElement<any>,
   browserRoute: RouteParams

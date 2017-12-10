@@ -45,6 +45,5 @@ export class InitializeApp implements Effect {
     }
     await Promise.all(promises);
     ReactDOM.render(action.payload.contentComponent, action.payload.contentRoot);
-    ReactDOM.render(action.payload.navComponent, action.payload.navRoot);
   }
 }

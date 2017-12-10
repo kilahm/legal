@@ -18,7 +18,6 @@ export class PersistJwt implements Effect {
   async run(next: () => Promise<State>, action: Action<any>, dispatch: Dispatch): Promise<void> {
     if (action instanceof SetUserJwt) {
       const jwt = action.payload.jwt;
-      console.log(jwt.isExpired);
       if (jwt.isExpired) {
         await dispatch(new Logout());
       } else {

@@ -3,16 +3,12 @@ import {StatelessComponent} from 'react';
 import {State} from '../reducer';
 import {Landing} from '../landing/Landing';
 import {routes} from '../routes';
-import {Login} from '../auth/Login';
-import {CreateAdmin} from '../user/CreateAdmin';
 import {NotFound} from './NotFound';
 import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 
 interface StateProps {
   path: string | null;
   query: string | null,
-  loggedIn: boolean;
-  adminExists: boolean;
 }
 
 interface DispatchProps {
@@ -34,13 +30,7 @@ function selectView(path: string, query: string): JSX.Element {
 }
 
 type Props = StateProps & DispatchProps
-const RouterComponent: StatelessComponent<Props> = ({path, query, loggedIn, adminExists}) => {
-  if (!adminExists) {
-    return <CreateAdmin/>;
-  }
-  if (!loggedIn) {
-    return <Login/>;
-  }
+const RouterComponent: StatelessComponent<Props> = ({path, query}) => {
 
   if (path === null) {
     return <Landing/>;
@@ -56,8 +46,6 @@ const stateMap: MapStateToProps<StateProps, {}> = (state: State) => {
   return {
     path: state.router.path,
     query: state.router.query,
-    loggedIn: !state.auth.jwt.isExpired && state.auth.jwt.isValid(),
-    adminExists: state.api.state.hasAdmin,
   };
 };
 const dispatchMap: MapDispatchToProps<{}, {}> = () => (

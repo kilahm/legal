@@ -5,11 +5,12 @@ import {NavigationMenuItem} from './MainNavigation';
 import {Dispatch} from '../store/Dispatch';
 import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 import {MainNavItem} from './MainNavItem';
+import {Jwt} from '../auth/Jwt';
 import createFragment = require('react-addons-create-fragment');
 
 interface StateProps {
   items: Array<NavigationMenuItem>;
-  loggedIn: boolean;
+  jwt: Jwt;
   getState: () => State;
 }
 
@@ -19,10 +20,7 @@ interface DispatchProps {
 
 type Props = StateProps & DispatchProps;
 
-const MenuComponent: React.StatelessComponent<Props> = ({items, loggedIn, dispatch, getState}) => {
-  if (!loggedIn) {
-    return null;
-  }
+const MenuComponent: React.StatelessComponent<Props> = ({items, dispatch, getState}) => {
   const navItems: { [key: string]: ReactElement<any> } = {};
   for (let nav of items) {
     if (nav.condition && !nav.condition(getState)) {
@@ -35,16 +33,18 @@ const MenuComponent: React.StatelessComponent<Props> = ({items, loggedIn, dispat
     />;
   }
   return (
-    <nav className="tabs is-toggle is-fullwidth">
-      <ul>{createFragment(navItems)}</ul>
-    </nav>
+    <div className="section" id="main-menu">
+      <nav className="tabs is-toggle is-fullwidth">
+        <ul>{createFragment(navItems)}</ul>
+      </nav>
+    </div>
   );
 };
 
 const stateMap: MapStateToProps<StateProps, {}> = (state: State) => {
   return {
     items: state.menu.mainNavigation,
-    loggedIn: state.auth.jwt && state.auth.jwt.isValid(),
+    jwt: state.auth.jwt,
     getState: () => state,
   };
 };
