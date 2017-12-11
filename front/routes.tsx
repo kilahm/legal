@@ -2,6 +2,7 @@ import * as React from 'react';
 import {Route} from './router/Router';
 import {Landing} from './landing/Landing';
 import {MeetingPage} from './meetings/MeetingPage';
+import {DocumentsPage} from './documents/DocumentsPage';
 
 export const routes: Route[] = [
   {
@@ -20,6 +21,6 @@ export const routes: Route[] = [
   },
   {
     pattern: /^\/documents$/,
-    factory: () => <h1>Documents page</h1>,
+    factory: () => <DocumentsPage/>,
   },
 ];
