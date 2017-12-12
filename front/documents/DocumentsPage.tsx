@@ -3,6 +3,9 @@ import {SFC} from 'react';
 import {connect, MapDispatchToProps, MapStateToProps} from '../store/connect';
 import {TogglePreviewMode} from './actions/TogglePreviewMode';
 import {SetDocument} from './actions/SetDocument';
+import {TextEditor} from '../form/TextEditor';
+import createFragment = require('react-addons-create-fragment');
+import ReactMarkdown = require('react-markdown');
 
 interface OwnProps {
 
@@ -10,14 +13,32 @@ interface OwnProps {
 
 type Props = DispatchProps & StateProps & OwnProps;
 const Component: SFC<Props> = ({document, updateDocument}) => {
-  if(document) {
-    return (
-      <textarea value={document.body} onChange={(event) => updateDocument(document.id, event.target.value)}/>
-    );
+  const children: any = {};
+  if (document) {
+    children.editor = <TextEditor
+      className="column"
+      style={{
+        resize: 'none',
+      }}
+      onChange={(event) => updateDocument(document.id, event.target.value)}
+      value={document.body}
+    />;
+    children.renderedContent = <ReactMarkdown
+      className="column"
+      source={document.body} escapeHtml
+    />;
   }
   return (
-    <p>No document selected</p>
-  )
+    <div className="section">
+      <div className="content">
+        <div
+          className="columns"
+        >
+          {createFragment(children)}
+        </div>
+      </div>
+    </div>
+  );
 };
 
 interface StateProps {
